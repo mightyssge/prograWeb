@@ -21,7 +21,7 @@ const ContentPeliculasReserva = () => {
             const userData = JSON.parse(storedUsername);
             setUsername(userData);
 
-            // Preencher los campos con los datos del sessionStorage
+            
             setFormData((prevData) => ({
                 ...prevData,
                 nombre: userData.nombre || '',
