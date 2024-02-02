@@ -91,7 +91,7 @@ function Sidebar() {
                 justifyContent: 'center',
               }}
             >
-              <StarIcon color="orange" /> {/* Utilizo un icono rojo para representar Logout */}
+              <StarIcon color="orange" /> 
             </ListItemIcon>
             <ListItemText primary={'Logout'} sx={{ opacity: 1, color: 'orange', textDecoration: 'none' }} />
           </ListItemButton>

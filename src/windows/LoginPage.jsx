@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, TextField, Button, Typography, alpha, Alert } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import users from "./usuarios/usuario.json";
+
 
 const LoginPage = () => {
     const [usuarios, setUsuarios] = useState([]);
@@ -14,10 +14,25 @@ const LoginPage = () => {
     const [showAlert, setShowAlert] = useState(false);
 
     const obtenerUsuarios = async () => {
-      const response = await fetch ("/users.json");
-      const data = await response.json()
-      setUsuarios(data)
-  }
+      try {
+        const response = await fetch("/usuario.json");
+        const data = await response.json();
+        setUsuarios(data);
+      } catch (error) {
+        console.error("Error al obtener usuarios:", error);
+      }
+    };
+    
+
+  useEffect(() => {
+    const user = sessionStorage.getItem("user");
+    if (user){
+      navigate("/home");
+    }
+    obtenerUsuarios()
+}, [navigate]);
+
+
 
     const isCorreoInstitucional = (correo) => {
       const correoRegex = /@aloe\.ulima\.edu\.pe$/i;
@@ -43,19 +58,23 @@ const LoginPage = () => {
         }
       
         // Recupera el array de usuarios del localStorage
-        const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+        //const usuariosJalados = JSON.parse(localStorage.getItem('usuarios')) || [];
       
         const usuarioEncontrado = usuarios.find(
           (usuario) => usuario.correo === correo && usuario.password === password
         );
+        console.log(usuarioEncontrado)
+        
+        
       
         if (usuarioEncontrado) {
           // Almacena la información de inicio de sesión en sessionStorage
           sessionStorage.setItem('isLoggedIn', 'true');
-          sessionStorage.setItem('username', usuarioEncontrado.nombre);
+          const datosUsuario = JSON.stringify(usuarioEncontrado)
+          sessionStorage.setItem('username', datosUsuario);
       
           // Almacena el nombre de usuario en localStorage
-          localStorage.setItem('USERNAME', usuarioEncontrado.nombre);
+          localStorage.setItem('USERNAME', usuarioEncontrado);
       
           navigate('/peliculas');
         } else {

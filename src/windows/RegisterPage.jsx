@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import {useEffect, useState} from "react";
 import { Container, TextField, Button, Typography, alpha } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import './style.css';
-import usuarios from "./usuarios/usuario.json";
+
 
 const RegisterPage = () => {
+  const [usuarios, setUsuarios] = useState([]);
+
   const navigate = useNavigate();  
   const [nombre, setNombre] = useState("");
   const [apellidos, setApellidos] = useState("");
@@ -15,6 +17,19 @@ const RegisterPage = () => {
 
   // Verifica si el usuario está autenticado al cargar la página de películas
   
+  const obtenerUsuarios = async () => {
+    const response = await fetch ("/usuario.json");
+    const data = await response.json()
+    setUsuarios(data)
+}
+useEffect(() => {
+  const user = sessionStorage.getItem("user");
+    if (user){
+      navigate("/home");
+    }
+    obtenerUsuarios()
+}, [navigate]);
+
   const handleRegister = (e) => {
     e.preventDefault();
 
@@ -50,18 +65,17 @@ const RegisterPage = () => {
       password,
     };
 
-    // Agregar el nuevo usuario al JSON local
-    usuarios.push(nuevoUsuario);
+    const nuevosUsuarios = [...usuarios, nuevoUsuario];
 
-    // Almacenar 'usuarios' en el localStorage
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+  // Almacenar la nueva lista de usuarios en sessionStorage
+  sessionStorage.setItem("usuarios", JSON.stringify(nuevosUsuarios));
 
-    // Redirige al usuario a la página de login después de un registro exitoso
-    navigate('/login');
+  // Redirige al usuario a la página de login después de un registro exitoso
+  navigate("/login");
 
-    console.log("Usuario registrado:", nuevoUsuario);
-    console.log("Usuarios actualizados:", usuarios);
-  };
+  console.log("Usuario registrado:", nuevoUsuario);
+  console.log("Usuarios actualizados:", nuevosUsuarios);
+};
 
   return (
     <Container

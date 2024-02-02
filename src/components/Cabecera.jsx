@@ -15,6 +15,9 @@ import StarIcon from '@mui/icons-material/Star';
 import Sidebar from './Sidebar';
 
 const drawerWidth = 240;
+const user = sessionStorage.getItem("username");
+const userJSON = user ? JSON.parse(user) : { nombre: "Usuario Invitado" };
+
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -90,10 +93,10 @@ const Header = () => {
     setOpen(false);
   };
 
-  // Obtener el nombre de usuario del sessionStorage
-  const userName = sessionStorage.getItem('username');
-  console.log(userName);
-  
+   // Obtener el nombre de usuario del sessionStorage
+const user = sessionStorage.getItem("username");
+const userJSON = user ? JSON.parse(user) : null;
+
   return (
     <Box sx={{ flexGrow: 1, mb: 8 }}>
       <CssBaseline />
@@ -112,11 +115,17 @@ const Header = () => {
           >
             <MenuIcon />
           </IconButton>
+            
+          
 
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
-            {`Hola (${localStorage.getItem("USERNAME")})`}
-          </Typography>
-
+          {userJSON ? (
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
+              Bienvendio {userJSON.nombre}
+            </Typography>
+            ) : (
+              <h1>hola</h1>
+            )
+          }
 
           <StarIcon sx={{ mx: '8px' }} />
           <StarIcon sx={{ mx: '8px' }} />
