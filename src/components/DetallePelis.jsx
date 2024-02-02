@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Typography, Chip, Container, Box, Grid, Card, Avatar ,Button } from '@mui/material';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useNavigate } from 'react-router-dom';
-
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
   const navigate = useNavigate();
@@ -33,11 +32,13 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
         <Typography variant="h4" sx={{ fontSize: '40px', fontFamily: 'Roboto' }}>
           {title}
         </Typography>
-        <Grid sx={{ display: 'flex' }}>
-          <LocationOnIcon color="action" sx={{ marginRight: '15px', marginBottom: '20px', marginTop: '10px' }} />
-          <Typography variant="subtitle2" color="#2196F3" fontWeight="600" sx={{ marginBottom: '20px', marginTop: '10px' }}>
+        <Grid sx={{ display: "flex", my: 3 }}>
+            <CalendarMonthIcon color="action" sx={{ marginRight: "15px" }} ></CalendarMonthIcon>
+            <Typography variant="subtitle2" color="#2196F3" fontWeight="600" sx={{}}>
             {year}
-          </Typography>
+            </Typography>
+          </Grid>
+        <Grid sx={{ display: 'flex' }}>
         </Grid>
       </Grid>
       <Grid container spacing={2}>
@@ -82,35 +83,35 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
         </Grid>
       </Grid>
       <Grid style={{ paddingTop: "2%", width: "100%" }} item md={4}>
-        <Typography variant="h2" style={{ fontSize: "45px", fontFamily: "Roboto" }}>
+        <Typography variant="h2" style={{ fontSize: "45px", fontFamily: "Roboto" }} sx={{mt:3}}>
           Salas disponibles
         </Typography>
       </Grid>
-      <Box sx={{ mt: 10, width: "55%", height: "100%" }}>
+      <Box sx={{ mt: 8, width: "55%", height: "100%" }}>
         {salas && salas.map((sala, index) => (
           <Grid key={index} style={{ marginBottom: "18%" }}>
             <Grid item md={4}>
               <Container style={{ width: "100%", height: "100%" }}>
                 <Container style={{ display: "flex", marginBottom: "4%" }}>
-                  <Avatar variant='square'>
+                  <Avatar variant='rounded'>
                     <Typography >
                       {sala.siglas}
                     </Typography>
                   </Avatar>
                   <Typography variant='h6' style={{ marginLeft: "2%", marginTop: "5px", fontFamily: "Roboto" }}>
-                    {sala.sala}
+                    <b>{sala.sala}</b>
                   </Typography>
                 </Container>
                 <Typography variant='body1' style={{ marginLeft: "5%", fontFamily: "Roboto" }}>
                   {sala.address}
                 </Typography>
               </Container>
-              <Grid sx={{ display: "flex", ml: 4, mb: 5 }}>
+              <Grid sx={{ display: "flex", ml: 4, mb: 5}}>
                 {sala.horarios.map((horario, horarioIndex) => (
                   <Button onClick={() => handleClick(index, horarioIndex)}
                     key={horarioIndex}
                     sx={{
-                      marginTop: '40px',
+                      marginTop: 2,
                       width: '100px',
                       height: '28px',
                       border: '1px dashed #9747FF',
