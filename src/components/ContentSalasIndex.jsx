@@ -6,8 +6,10 @@ import { useEffect } from "react";
 import CardSala from "./CardSala";
 
 
-const ContentSalasIndex = () => {
+const ContentSalasIndex = ({searchText}) => {
+    const [filteredSalas, setFilteredSalas] = useState([])
     const [salasData, setSalasData] = useState([])
+
     const obtenerSalas = async () => {
         const response = await fetch("/salas.json")
         const data = await response.json()
@@ -16,6 +18,11 @@ const ContentSalasIndex = () => {
     useEffect(() => {
         obtenerSalas()
     }, [])
+
+    useEffect(() => {
+        const filteredSalas = salasData.filter((sala) => sala.name.toLowerCase().includes(searchText.toLowerCase()))
+        setFilteredSalas(filteredSalas)
+    }, [salasData, searchText])
 
     return (
         <Box flex={7} sx={{ p: 3 }} >
@@ -29,7 +36,7 @@ const ContentSalasIndex = () => {
 
                 <Grid container spacing={2} > 
                 {
-                    salasData.map((e)=>{
+                    filteredSalas.map((e)=>{
                         return (
                         <CardSala
                             sala={e}
