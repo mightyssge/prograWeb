@@ -1,23 +1,36 @@
-
-import { Button, TextField, Typography, Box, Paper, Dialog, DialogTitle,Grid, DialogContent, DialogActions } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Button, TextField, Typography, Box, Paper, Dialog, DialogTitle, Grid, DialogContent, DialogActions } from '@mui/material';
 import CardReserva from './CardReserva';
 import CardImageReserva from './CardImageReserva';
 import CardFormularioAdentro from './CardFormularioAdentro';
-import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const ContentPeliculasReserva = () => {
-
     const location = useLocation();
     const { peliculaActual } = location.state || {};
+
+    const [username, setUsername] = useState('');
+
     useEffect(() => {
         if (peliculaActual) {
-            // Utiliza console.log para imprimir la información en la consola
             console.log('Información de la película en Reserva:', peliculaActual);
         }
+
+        const storedUsername = sessionStorage.getItem('username');
+        if (storedUsername) {
+            const userData = JSON.parse(storedUsername);
+            setUsername(userData);
+
+            // Preencher los campos con los datos del sessionStorage
+            setFormData((prevData) => ({
+                ...prevData,
+                nombre: userData.nombre || '',
+                apellido: userData.apellido || '',
+                codigo: userData.correo || '',
+                cantidad: prevData.cantidad || '',
+            }));
+        }
     }, [peliculaActual]);
-
-
 
     const [formData, setFormData] = useState({
         nombre: '',
@@ -37,9 +50,12 @@ const ContentPeliculasReserva = () => {
         }));
     };
 
+    const handlePrintUsername = () => {
+        console.log('Username almacenado:', username);
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
-
 
         if (Object.values(formData).some((value) => value.trim() === '')) {
             setError('Por favor, complete todos los campos.');
@@ -53,7 +69,6 @@ const ContentPeliculasReserva = () => {
         setShowConfirmation(false);
         setError('');
     };
-
     return (
         <Box flex={19} sx={{
             width: 'auto',
@@ -61,6 +76,7 @@ const ContentPeliculasReserva = () => {
             padding: '24px',
             gap: '10px'
         }}>
+
             <Box sx={{
                 width: 'auto',
                 height: 'auto',
@@ -100,7 +116,7 @@ const ContentPeliculasReserva = () => {
                         gap: '24px',
                         display: 'flex',
                         justifyContent: 'space-between'
-                        
+
                     }}>
                         <Grid item md={2} sx={{
                             width: 'auto',
@@ -155,11 +171,16 @@ const ContentPeliculasReserva = () => {
                                             name="cantidad"
                                             value={formData.cantidad}
                                             onChange={handleChange}
+                                            onInput={(e) => {
+                                                
+                                                e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 5);
+                                            }}
                                             style={{ marginBottom: '20px' }}
                                             InputProps={{
                                                 placeholder: "Cantidad",
                                                 style: { color: 'black' },
                                             }}
+                                            type="number" 
                                         />
 
                                         <Button
@@ -168,7 +189,7 @@ const ContentPeliculasReserva = () => {
                                             color="secondary"
                                             fullWidth
                                             style={{ backgroundColor: 'rgb(250, 117, 37)', color: 'white', padding: '15px', fontWeight: 'bold' }}
-                                            disabled={Object.values(formData).some((value) => value.trim() === '')}
+                                            
                                         >
                                             Reservar
                                         </Button>
@@ -242,7 +263,7 @@ const ContentPeliculasReserva = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </Box>
+        </Box >
     );
 };
 
