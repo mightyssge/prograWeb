@@ -5,12 +5,20 @@ import { Link, useNavigate } from "react-router-dom";
 import users from "./usuarios/usuario.json";
 
 const LoginPage = () => {
+    const [usuarios, setUsuarios] = useState([]);
+
     const navigate = useNavigate();
     const [correo, setCorreo] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [showAlert, setShowAlert] = useState(false);
-  
+
+    const obtenerUsuarios = async () => {
+      const response = await fetch ("/users.json");
+      const data = await response.json()
+      setUsuarios(data)
+  }
+
     const isCorreoInstitucional = (correo) => {
       const correoRegex = /@aloe\.ulima\.edu\.pe$/i;
       return correoRegex.test(correo);
@@ -37,7 +45,7 @@ const LoginPage = () => {
         // Recupera el array de usuarios del localStorage
         const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
       
-        const usuarioEncontrado = users.find(
+        const usuarioEncontrado = usuarios.find(
           (usuario) => usuario.correo === correo && usuario.password === password
         );
       
