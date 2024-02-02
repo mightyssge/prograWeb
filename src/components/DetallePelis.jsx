@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Typography, Chip, Container, Box, Grid, Card, Avatar } from '@mui/material';
+import { Typography, Chip, Container, Box, Grid, Card, Avatar ,Button } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useNavigate } from 'react-router-dom';
 
@@ -37,10 +37,6 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
           <LocationOnIcon color="action" sx={{ marginRight: '15px', marginBottom: '20px', marginTop: '10px' }} />
           <Typography variant="subtitle2" color="#2196F3" fontWeight="600" sx={{ marginBottom: '20px', marginTop: '10px' }}>
             {year}
-          </Typography>
-          <LocationOnIcon color="action" sx={{ marginLeft: '15px', marginRight: '15px', marginBottom: '20px', marginTop: '10px' }} />
-          <Typography variant="subtitle2" color="#2196F3" fontWeight="600" sx={{ marginBottom: '20px', marginTop: '10px', fontFamily: 'Roboto' }}>
-            Director
           </Typography>
         </Grid>
       </Grid>
@@ -111,11 +107,11 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
               </Container>
               <Grid sx={{ display: "flex", ml: 4, mb: 5 }}>
                 {sala.horarios.map((horario, horarioIndex) => (
-                  <Box
+                  <Button onClick={() => handleClick(index, horarioIndex)}
                     key={horarioIndex}
                     sx={{
                       marginTop: '40px',
-                      width: '80px',
+                      width: '100px',
                       height: '28px',
                       border: '1px dashed #9747FF',
                       borderRadius: '8px',
@@ -127,12 +123,12 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
                       padding: "4px, 24px, 4px, 24px"
                     }}
                     >
-                    <button onClick={() => handleClick(index, horarioIndex)}>
+
                       <Typography variant="h5" style={{ fontSize: '12px', color: "rgba(151, 71, 255, 1)" }}>
                         {horario}
                       </Typography>
-                    </button>
-                  </Box>
+
+                  </Button>
                 ))}
               </Grid>
             </Grid>

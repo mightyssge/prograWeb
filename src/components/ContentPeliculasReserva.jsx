@@ -1,5 +1,5 @@
 
-import { Button, TextField, Typography, Box, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Button, TextField, Typography, Box, Paper, Dialog, DialogTitle,Grid, DialogContent, DialogActions } from '@mui/material';
 import CardReserva from './CardReserva';
 import CardImageReserva from './CardImageReserva';
 import CardFormularioAdentro from './CardFormularioAdentro';
@@ -12,10 +12,10 @@ const ContentPeliculasReserva = () => {
     const { peliculaActual } = location.state || {};
     useEffect(() => {
         if (peliculaActual) {
-          // Utiliza console.log para imprimir la información en la consola
-          console.log('Información de la película en Reserva:', peliculaActual);
+            // Utiliza console.log para imprimir la información en la consola
+            console.log('Información de la película en Reserva:', peliculaActual);
         }
-      }, [peliculaActual]);
+    }, [peliculaActual]);
 
 
 
@@ -40,7 +40,7 @@ const ContentPeliculasReserva = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-      
+
         if (Object.values(formData).some((value) => value.trim() === '')) {
             setError('Por favor, complete todos los campos.');
         } else {
@@ -51,7 +51,7 @@ const ContentPeliculasReserva = () => {
 
     const handleCloseConfirmation = () => {
         setShowConfirmation(false);
-        setError(''); 
+        setError('');
     };
 
     return (
@@ -88,20 +88,21 @@ const ContentPeliculasReserva = () => {
                     height: 'auto',
                     padding: '0px 24px 0px 24px'
                 }}>
-        
-                    <CardReserva peliculaActual={peliculaActual}/>
+
+                    <CardReserva peliculaActual={peliculaActual} />
 
 
-                
-                  
+
+
                     <Box sx={{
                         width: 'auto',
                         height: 'auto',
                         gap: '24px',
                         display: 'flex',
-                        justifyContent: 'space-between',
+                        justifyContent: 'space-between'
+                        
                     }}>
-                        <Box sx={{
+                        <Grid item md={2} sx={{
                             width: 'auto',
                             height: 'auto',
                             paddingLeft: '0px',
@@ -109,7 +110,7 @@ const ContentPeliculasReserva = () => {
                         }}>
                             <Box style={{ paddingTop: '20px', paddingRight: '0px', paddingLeft: '0px', paddingBottom: '20px', marginLeft: '-45px' }}>
                                 <Paper elevation={3} style={{ padding: '20px', boxShadow: '5px 5px 15px 0px rgba(0,0,0,0.1)' }}>
-                                   <CardFormularioAdentro  peliculaActual={peliculaActual} />
+                                    <CardFormularioAdentro peliculaActual={peliculaActual} />
                                     <form onSubmit={handleSubmit}>
                                         <TextField
                                             label="Nombre"
@@ -180,10 +181,10 @@ const ContentPeliculasReserva = () => {
                                     </form>
                                 </Paper>
                             </Box>
-                        </Box>
-
-                       <CardImageReserva peliculaActual={peliculaActual}/>
-
+                        </Grid>
+                        <Grid item md={4}>
+                            <CardImageReserva peliculaActual={peliculaActual} />
+                        </Grid>
                     </Box>
                 </Box>
             </Box>
