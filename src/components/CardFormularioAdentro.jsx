@@ -1,5 +1,5 @@
 
-import { Button, TextField, Typography, Box, Icon, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 
 const CardFormularioAdentro=( { peliculaActual})=>{
     return <Box>

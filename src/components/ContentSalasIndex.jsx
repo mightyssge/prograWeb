@@ -1,8 +1,6 @@
 import React from "react";
-import { Box, Grid, Card, CardContent, CardMedia } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
-import { Link } from "react-router-dom"
 import { useState } from "react";
 import { useEffect } from "react";
 import CardSala from "./CardSala";

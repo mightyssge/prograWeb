@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Grid, Container, Avatar, Typography, Button, Link } from '@mui/material';
-import CardMedia from '@mui/material/CardMedia';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import Chip from '@mui/material/Chip';
+import React from 'react';
+import { Grid, Container, Avatar, Typography, Button } from '@mui/material'
 
 function PeliculasDisponibles(props) {
     const peliActual = props.listafiltrada.find(pelicula => pelicula.title === props.pelicula)

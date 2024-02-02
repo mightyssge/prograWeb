@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Typography, Chip, Container, Box, Grid, Card, Avatar, Link } from '@mui/material';
+import { Typography, Chip, Container, Box, Grid, Card, Avatar } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
   const navigate = useNavigate();
   const [peliculaActual, setPeliculaActual] = useState({ title, year, thumbnail });
+
+  console.log(peliculaActual)
 
   const handleClick = (index, horarioIndex) => {
     const salaSeleccionada = salas[index];

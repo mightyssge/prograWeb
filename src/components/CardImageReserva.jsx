@@ -1,4 +1,4 @@
-import { Button, TextField, Typography, Box, Icon, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Box, Paper} from '@mui/material';
 const CardImageReserva=({ peliculaActual})=>{
     return <Box sx={{
         width: 'auto',

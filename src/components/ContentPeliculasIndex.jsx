@@ -1,8 +1,6 @@
 import React from "react";
-import { Box, Grid, Paper, Card, CardContent, CardMedia } from '@mui/material';
+import { Box, Grid} from '@mui/material';
 import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
-import { Link } from "react-router-dom"
 import { useState } from "react";
 import { useEffect } from "react";
 import CardPelicula from "./CardPelicula";
