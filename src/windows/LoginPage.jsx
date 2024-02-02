@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, TextField, Button, Typography, alpha, Alert } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import usuarios from "./usuarios/usuario.json";
+import users from "./usuarios/usuario.json";
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -37,7 +37,7 @@ const LoginPage = () => {
         // Recupera el array de usuarios del localStorage
         const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
       
-        const usuarioEncontrado = usuarios.find(
+        const usuarioEncontrado = users.find(
           (usuario) => usuario.correo === correo && usuario.password === password
         );
       

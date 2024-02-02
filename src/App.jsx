@@ -13,7 +13,7 @@ import SalaItemPage from "./windows/SalaItemPage.jsx";
 
 
 const App = () => {
-  const nombreDeUsuario = "UsuarioEjemplo"; 
+  
   
   return (
 

@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from "react";
-
-import { useNavigate } from 'react-router-dom';
-
+import React, { useState } from "react";
+//import { useNavigate } from 'react-router-dom';
 import { Container, TextField, Button, Typography, alpha } from "@mui/material";
-import { Link } from "react-router-dom";
 import './style.css';
 
 const RecoverPage = () => {
@@ -14,11 +11,10 @@ const RecoverPage = () => {
   const [codigoAlumno, setCodigoAlumno] = useState("");
 
   const handleRecover = () => {
-    // Puedes agregar lógica para manejar la recuperación de cuenta aquí.
-    // Por ejemplo, enviar un código de recuperación al correo proporcionado.
+    return
   };
 
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
 
 

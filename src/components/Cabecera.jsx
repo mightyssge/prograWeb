@@ -85,9 +85,6 @@ const Header = () => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
 
   const handleDrawerClose = () => {
     setOpen(false);
@@ -95,7 +92,8 @@ const Header = () => {
 
   // Obtener el nombre de usuario del sessionStorage
   const userName = sessionStorage.getItem('username');
-
+  console.log(userName);
+  
   return (
     <Box sx={{ flexGrow: 1, mb: 8 }}>
       <CssBaseline />

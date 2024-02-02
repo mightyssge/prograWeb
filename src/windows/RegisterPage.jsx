@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import { Container, TextField, Button, Typography, alpha } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
 import './style.css';
-
-// Importa el JSON de usuarios
 import usuarios from "./usuarios/usuario.json";
 
 const RegisterPage = () => {
