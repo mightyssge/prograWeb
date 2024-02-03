@@ -120,7 +120,7 @@ const userJSON = user ? JSON.parse(user) : null;
 
           {userJSON ? (
               <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
-              Bienvendio {userJSON.nombre}
+              Bienvenido {userJSON.nombre}
             </Typography>
             ) : (
               <h1>hola</h1>

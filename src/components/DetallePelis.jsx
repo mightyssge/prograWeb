@@ -18,7 +18,7 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
       year,
       thumbnail,
       horarioSeleccionado,
-      sala: salaSeleccionada.sala, // Agregamos el nombre de la sala al estado
+      sala: salaSeleccionada.sala, 
     });
   
     console.log(`Información de la película: ${title}, Año: ${year}, Sala: ${salaSeleccionada.sala}, Horario seleccionado: ${horarioSeleccionado}, Img: ${thumbnail}`);
