@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import {  Box,Grid, Card } from '@mui/material';
+import { Box, Grid, Card } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
-import {  useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import CardMedia from '@mui/material/CardMedia';
 import PeliculasDisponibles from './PeliculasDisponibles';
 
-
-
-
 const ContentSalaItem = () => {
-
   const location = useLocation();
-  const currentSala = location.state?.sala
+  const currentSala = location.state?.sala;
 
 
   const [moviesData, setMoviesData] = useState([])
@@ -22,18 +18,21 @@ const ContentSalaItem = () => {
     const data = await response.json()
     setMoviesData(data)
   }
-  useEffect(() => {
+  useEffect(() => { 
     obtenerPeliculas()
   }, [])
 
-  // Utilizando map para extraer el valor de "pelicula" de cada objeto en la lista
+  useEffect(() => {
+    sessionStorage.setItem('Lugar', currentSala.name);
+}, [currentSala]);
+
+
   const titulosFiltrados = currentSala.peliculas.map(pelicula => pelicula.pelicula);
   const currentPeliculasforSala = moviesData.filter(pelicula => titulosFiltrados.includes(pelicula.title));
   
   console.log(currentPeliculasforSala)
 
   if (currentPeliculasforSala == null) {
-    // Manejar el caso donde currentSala es undefined, por ejemplo, redirigir a una página de error.
     return <p>La sala no existe o no se ha especificado.</p>;
   }
 

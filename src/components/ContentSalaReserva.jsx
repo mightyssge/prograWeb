@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+
 import {
     Button,
     TextField,
@@ -13,6 +14,8 @@ import {
 } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
+
+
 const ContentSalaReserva = () => {
     const [formData, setFormData] = useState({
         nombre: '',
@@ -24,7 +27,6 @@ const ContentSalaReserva = () => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [error, setError] = useState('');
     const [thumbnail, setThumbnail] = useState('');
-    const [salaNombre, setSalaNombre] = useState('');
 
     useEffect(() => {
         const storedUserData = sessionStorage.getItem('username');
@@ -42,33 +44,31 @@ const ContentSalaReserva = () => {
     const peliculaInfo = sessionStorage.getItem('seleccionHorario');
     const peliculaData = peliculaInfo ? JSON.parse(peliculaInfo) : null;
 
+    const lugar = sessionStorage.getItem('Lugar')
+
     const horarioInfo = sessionStorage.getItem('seleccionHorario');
     const horarioData = horarioInfo ? JSON.parse(horarioInfo) : null;
 
     useEffect(() => {
-        const fetchThumbnailAndSala = async () => {
+        const fetchThumbnail = async () => {
             try {
                 const response = await fetch('/peliculas.json');
                 const peliculas = await response.json();
 
                 const selectedMovie = peliculas.find(movie => movie.title === peliculaData.pelicula);
-                const selectedHorario = selectedMovie.salas.find(sala => sala.horarios.includes(horarioData.horario));
 
-                if (selectedMovie && selectedHorario) {
+                if (selectedMovie) {
                     setThumbnail(selectedMovie.thumbnail);
-
-                    const salaNombre = selectedHorario.sala;
-                    setSalaNombre(salaNombre);
                 }
             } catch (error) {
-                console.error('Error al obtener el thumbnail y la sala:', error);
+                console.error('Error al obtener el thumbnail:', error);
             }
         };
 
-        if (peliculaData && peliculaData.pelicula && horarioData && horarioData.horario) {
-            fetchThumbnailAndSala();
+        if (peliculaData && peliculaData.pelicula) {
+            fetchThumbnail();
         }
-    }, [peliculaData, horarioData]);
+    }, [peliculaData]);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -155,7 +155,7 @@ const ContentSalaReserva = () => {
                                 <LocationOnIcon />
                             </Icon>
                             <Typography color="#2196F3" variant="subtitle1" component="div" sx={{ marginLeft: '5px' }}>
-                                {salaNombre ? salaNombre : 'DIRECCION'}
+                                {lugar}
                             </Typography>
                         </Box>
                     </Box>
@@ -229,7 +229,7 @@ const ContentSalaReserva = () => {
                                                 placeholder: "Cantidad",
                                                 style: { color: 'black' },
                                             }}
-                                            type="number"
+                                            ype="number"
                                         />
 
                                         <Button
