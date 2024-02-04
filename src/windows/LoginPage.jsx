@@ -45,6 +45,7 @@ const LoginPage = () => {
           // Almacena la información de inicio de sesión en sessionStorage
           sessionStorage.setItem('isLoggedIn', 'true');
           sessionStorage.setItem('username', usuarioEncontrado.nombre);
+          sessionStorage.setItem('user', JSON.stringify(usuarioEncontrado));
       
           // Almacena el nombre de usuario en localStorage
           localStorage.setItem('USERNAME', usuarioEncontrado.nombre);
