@@ -25,6 +25,9 @@ const ContentSalaItem = () => {
   useEffect(() => {
     obtenerPeliculas()
   }, [])
+  useEffect(() => {
+    sessionStorage.setItem('Lugar', currentSala.name);
+}, [currentSala]);
 
   // Utilizando map para extraer el valor de "pelicula" de cada objeto en la lista
   const titulosFiltrados = currentSala.peliculas.map(pelicula => pelicula.pelicula);

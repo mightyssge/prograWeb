@@ -1,9 +1,29 @@
 import React from 'react';
 import { Grid, Container, Avatar, Typography, Button } from '@mui/material'
+import { useNavigate } from 'react-router-dom';
+
 
 function PeliculasDisponibles(props) {
+
+    const navigate = useNavigate();
+
     const peliActual = props.listafiltrada.find(pelicula => pelicula.title === props.pelicula)
-    console.log(peliActual)
+    const handleHorarioClick = (horario) => {
+        const dataToSave = {
+            pelicula: props.pelicula,
+            sigla: peliActual.siglas,
+            horario: horario,
+            
+        };
+    
+        console.log(dataToSave);
+    
+        sessionStorage.setItem('seleccionHorario', JSON.stringify(dataToSave));
+        navigate('/reserva2');
+    };
+    
+      
+    
     if (!peliActual) {
         return (
           <Grid item md={4}>
@@ -33,6 +53,7 @@ return (
                 {
                     props.horarios.map((horario)=>{
                         return <Button
+                        onClick={() => handleHorarioClick(horario)}
                         sx={{
                         marginTop: '40px',
                         width: '100px',

@@ -66,6 +66,7 @@ const LoginPage = () => {
           sessionStorage.setItem('isLoggedIn', 'true');
           sessionStorage.setItem('user', data);
           
+          
       
           navigate('/peliculas');
         } else {
