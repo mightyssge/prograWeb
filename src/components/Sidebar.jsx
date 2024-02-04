@@ -8,7 +8,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { useNavigate } from 'react-router-dom';
 
-function Sidebar() {
+function Sidebar({filter}) {
   const navigate = useNavigate();
 
   const peliculasOnClick = () => {
@@ -18,6 +18,10 @@ function Sidebar() {
   const salasOnClick = () => {
     navigate('/salas');
   };
+
+  const handleSearch = (e) => {
+    filter(e.target.value)
+}
 
   const logoutOnClick = () => {
     // Realiza las acciones necesarias para cerrar la sesión
@@ -34,7 +38,7 @@ function Sidebar() {
         alt="Logo Ulima"
         style={{ width: 128, height: 127, marginLeft: 51, marginRight: 51, marginTop: 24 }}
       />
-      <TextField label="Busca" variant="outlined" margin="normal" sx={{ mx: 2 }} />
+      <TextField label="Busca" variant="outlined" margin="normal" sx={{ mx: 2 }} onChange={handleSearch} />
       <List>
         <ListItem key={'Peliculas'} disablemx sx={{ display: 'block' }} onClick={peliculasOnClick}>
           <ListItemButton
