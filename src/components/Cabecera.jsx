@@ -90,10 +90,11 @@ const Header = () => {
     setOpen(false);
   };
 
-  // Obtener el nombre de usuario del sessionStorage
-  const userName = sessionStorage.getItem('username');
-  console.log(userName);
   
+  
+  const user = sessionStorage.getItem("user");
+  const userJSON = user ? JSON.parse(user) : null;
+
   return (
     <Box sx={{ flexGrow: 1, mb: 8 }}>
       <CssBaseline />
@@ -113,9 +114,15 @@ const Header = () => {
             <MenuIcon />
           </IconButton>
 
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
-            {`Hola (${localStorage.getItem("USERNAME")})`}
-          </Typography>
+          {userJSON ? (
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
+                Hola {userJSON.nombre}
+              </Typography>
+            ) : (
+              <div>nada</div>
+            )}
+
+          
 
 
           <StarIcon sx={{ mx: '8px' }} />

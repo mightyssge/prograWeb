@@ -23,7 +23,7 @@ function Sidebar() {
     // Realiza las acciones necesarias para cerrar la sesión
     // Por ejemplo, limpiar el estado de la sesión y redirigir a la página de inicio de sesión
     sessionStorage.removeItem('isLoggedIn');
-    sessionStorage.removeItem('username');
+    sessionStorage.removeItem('user');
     navigate('/login'); // Puedes redirigir a donde sea necesario después de cerrar sesión
   };
 

@@ -2,19 +2,20 @@
 import React, { useState, useEffect } from "react";
 import { Container, TextField, Button, Typography, alpha, Alert } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import users from "./usuarios/usuario.json";
+
 
 const LoginPage = () => {
-    const [usuarios, setUsuarios] = useState([]);
+  const [usuarios, setUsuarios] = useState([])
 
     const navigate = useNavigate();
+
     const [correo, setCorreo] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [showAlert, setShowAlert] = useState(false);
 
-    const obtenerUsuarios = async () => {
-      const response = await fetch ("/users.json");
+    const obtenerUsuariosHTTP = async () => {
+      const response = await fetch("http://localhost:3000/usuario.json")
       const data = await response.json()
       setUsuarios(data)
   }
@@ -42,20 +43,29 @@ const LoginPage = () => {
           return;
         }
       
-        // Recupera el array de usuarios del localStorage
-        const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
       
-        const usuarioEncontrado = usuarios.find(
+        var usuarioEncontrado = usuarios.find(
           (usuario) => usuario.correo === correo && usuario.password === password
         );
-      
+
+
+        if(!usuarioEncontrado){
+          const usuariosLocales = localStorage.getItem("usuarios");
+          const usuariosLocalesJSON = usuariosLocales ? JSON.parse(usuariosLocales) : null;
+          usuarioEncontrado = usuariosLocalesJSON.find(
+            (usuario) => usuario.correo === correo && usuario.password === password
+          );
+        }
+
+
+
         if (usuarioEncontrado) {
           // Almacena la información de inicio de sesión en sessionStorage
+          const data = JSON.stringify(usuarioEncontrado);
+
           sessionStorage.setItem('isLoggedIn', 'true');
-          sessionStorage.setItem('username', usuarioEncontrado.nombre);
-      
-          // Almacena el nombre de usuario en localStorage
-          localStorage.setItem('USERNAME', usuarioEncontrado.nombre);
+          sessionStorage.setItem('user', data);
+          
       
           navigate('/peliculas');
         } else {
@@ -77,6 +87,7 @@ const LoginPage = () => {
         // Si está autenticado, redirige a la página de películas
         navigate('/peliculas');
       }
+      obtenerUsuariosHTTP()
     }, [navigate]);
 
   return (

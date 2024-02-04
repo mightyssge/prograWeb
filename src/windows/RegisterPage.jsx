@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import {useEffect, useState} from "react";
 import { Container, TextField, Button, Typography, alpha } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import './style.css';
-import usuarios from "./usuarios/usuario.json";
+
 
 const RegisterPage = () => {
   const navigate = useNavigate();  
@@ -13,8 +13,23 @@ const RegisterPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
+  const [usuarios, setUsuarios] = useState([]);
+
   // Verifica si el usuario está autenticado al cargar la página de películas
-  
+  const obtenerUsuarios = async () => {
+    const response = await fetch ("/usuario.json");
+    const data = await response.json()
+    setUsuarios(data)
+}
+
+useEffect(() => {
+  const user = sessionStorage.getItem("user");
+    if (user){
+      navigate("/home");
+    }
+    obtenerUsuarios()
+}, [navigate]);
+
   const handleRegister = (e) => {
     e.preventDefault();
 
