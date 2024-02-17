@@ -26,7 +26,7 @@ const ContentPeliculasReserva = () => {
                 ...prevData,
                 nombre: userData.nombre || '',
                 apellido: userData.apellido || '',
-                codigo: userData.correo || '',
+                codigo: userData.correo.substring(0, userData.correo.indexOf("@")) || '',
                 cantidad: prevData.cantidad || '',
             }));
         }
@@ -152,6 +152,7 @@ const ContentPeliculasReserva = () => {
                                                 placeholder: "Nombre",
                                                 style: { color: 'black' },
                                             }}
+                                            
                                         />
                                         <TextField
                                             label="Apellido"
@@ -164,18 +165,20 @@ const ContentPeliculasReserva = () => {
                                                 placeholder: "Apellido",
                                                 style: { color: 'black' },
                                             }}
+                                            
                                         />
-                                        <TextField
+                                        <TextField 
                                             label="Código"
                                             fullWidth
                                             margin="normal"
                                             name="codigo"
-                                            value={formData.codigo.substring(0, formData.codigo.indexOf("@"))}
+                                            value={formData.codigo}
                                             onChange={handleChange}
                                             InputProps={{
                                                 placeholder: "Código",
                                                 style: { color: 'black' },
                                             }}
+                                            type="number"
                                         />
                                         <TextField
                                             label="Cantidad"
@@ -185,7 +188,6 @@ const ContentPeliculasReserva = () => {
                                             value={formData.cantidad}
                                             onChange={handleChange}
                                             onInput={(e) => {
-                                                
                                                 e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 5);
                                             }}
                                             style={{ marginBottom: '20px' }}
