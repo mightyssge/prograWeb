@@ -34,7 +34,7 @@ const ContentSalaReserva = () => {
             const userData = JSON.parse(storedUserData);
             setFormData({
                 nombre: userData.nombre || '',
-                apellido: userData.apellidos || '',
+                apellido: userData.apellido || '',
                 codigo: userData.correo || '',
                 cantidad: '',
             });
@@ -198,7 +198,7 @@ const ContentSalaReserva = () => {
                                             fullWidth
                                             margin="normal"
                                             name="apellido"
-                                            value={formData.apellido}
+                                            value={"a"}
                                             onChange={handleChange}
                                             InputProps={{
                                                 placeholder: "Apellido",
