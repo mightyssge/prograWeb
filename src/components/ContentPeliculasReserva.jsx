@@ -59,7 +59,20 @@ const ContentPeliculasReserva = () => {
 
         if (Object.values(formData).some((value) => value.trim() === '')) {
             setError('Por favor, complete todos los campos.');
-        } else {
+        } 
+        else if (formData.cantidad <= 0) {
+            setError('La cantidad debe ser mayor a 0.');
+        }
+        
+        else if (/\d/.test(formData.nombre)) {
+            setError('Los nombres no pueden contener números.');
+        }
+
+        else if(/\d/.test(formData.apellido)){
+            setError('Los apellidos no pueden contener números')
+        }
+    
+        else {
             console.log('Datos de reserva:', formData);
             setShowConfirmation(true);
         }
@@ -157,7 +170,7 @@ const ContentPeliculasReserva = () => {
                                             fullWidth
                                             margin="normal"
                                             name="codigo"
-                                            value={formData.codigo}
+                                            value={formData.codigo.substring(0, formData.codigo.indexOf("@"))}
                                             onChange={handleChange}
                                             InputProps={{
                                                 placeholder: "Código",

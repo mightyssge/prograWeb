@@ -1,4 +1,3 @@
-import * as React from 'react';
 import StarIcon from '@mui/icons-material/Star';
 import TextField from '@mui/material/TextField';
 import List from '@mui/material/List';
@@ -6,10 +5,22 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
 
 function Sidebar({filter}) {
-  const navigate = useNavigate();
+  const [canFilter, setCanFilter] = useState(false);
+  const navigate = useNavigate(); 
+
+  const location = useLocation();
+
+  const canWeFilter = () => {
+    if (location.pathname === '/peliculas' || location.pathname === '/salas') {
+      setCanFilter(true);
+    } else {
+      setCanFilter(false);
+    }
+  }
 
   const peliculasOnClick = () => {
     navigate('/peliculas');
@@ -31,6 +42,10 @@ function Sidebar({filter}) {
     navigate('/login'); // Puedes redirigir a donde sea necesario después de cerrar sesión
   };
 
+  useState(() => {
+    canWeFilter();
+  })
+
   return (
     <>
       <img
@@ -38,7 +53,16 @@ function Sidebar({filter}) {
         alt="Logo Ulima"
         style={{ width: 128, height: 127, marginLeft: 51, marginRight: 51, marginTop: 24 }}
       />
+
+
+      {canFilter && 
       <TextField label="Busca" variant="outlined" margin="normal" sx={{ mx: 2 }} onChange={handleSearch} />
+      }
+      
+      
+      
+      
+      
       <List>
         <ListItem key={'Peliculas'} disablemx sx={{ display: 'block' }} onClick={peliculasOnClick}>
           <ListItemButton
