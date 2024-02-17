@@ -198,7 +198,7 @@ const ContentSalaReserva = () => {
                                             fullWidth
                                             margin="normal"
                                             name="apellido"
-                                            value={"a"}
+                                            value={formData.apellido}
                                             onChange={handleChange}
                                             InputProps={{
                                                 placeholder: "Apellido",

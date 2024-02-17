@@ -25,7 +25,7 @@ const ContentPeliculasReserva = () => {
             setFormData((prevData) => ({
                 ...prevData,
                 nombre: userData.nombre || '',
-                apellido: userData.apellidos || '',
+                apellido: userData.apellido || '',
                 codigo: userData.correo || '',
                 cantidad: prevData.cantidad || '',
             }));
