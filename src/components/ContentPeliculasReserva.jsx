@@ -9,7 +9,7 @@ const ContentPeliculasReserva = () => {
     const location = useLocation();
     const { peliculaActual } = location.state || {};
 
-    //const [username, setUsername] = useState('');
+    const [username, setUsername] = useState('');
 
     useEffect(() => {
         if (peliculaActual) {
@@ -19,7 +19,7 @@ const ContentPeliculasReserva = () => {
         const storedUsername = sessionStorage.getItem('user');
         if (storedUsername) {
             const userData = JSON.parse(storedUsername);
-            //setUsername(userData);
+            setUsername(userData);
 
             
             setFormData((prevData) => ({
@@ -50,9 +50,9 @@ const ContentPeliculasReserva = () => {
         }));
     };
 
-    //const handlePrintUsername = () => {
-    //    console.log('Username almacenado:', username);
-    //};
+    const handlePrintUsername = () => {
+        console.log('Username almacenado:', username);
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();

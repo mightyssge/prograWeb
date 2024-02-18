@@ -35,7 +35,7 @@ const ContentSalaReserva = () => {
             setFormData({
                 nombre: userData.nombre || '',
                 apellido: userData.apellido || '',
-                codigo: userData.correo.substring(0, userData.correo.indexOf("@")) || '',
+                codigo: userData.correo || '',
                 cantidad: '',
             });
         }
@@ -83,20 +83,7 @@ const ContentSalaReserva = () => {
 
         if (Object.values(formData).some((value) => value.trim() === '')) {
             setError('Por favor, complete todos los campos.');
-        } 
-        else if (formData.cantidad <= 0) {
-            setError('La cantidad debe ser mayor a 0.');
-        }
-        
-        else if (/\d/.test(formData.nombre)) {
-            setError('Los nombres no pueden contener números.');
-        }
-
-        else if(/\d/.test(formData.apellido)){
-            setError('Los apellidos no pueden contener números')
-        }
-    
-        else {
+        } else {
             console.log('Datos de reserva:', formData);
             setShowConfirmation(true);
         }
@@ -227,10 +214,8 @@ const ContentSalaReserva = () => {
                                             onChange={handleChange}
                                             InputProps={{
                                                 placeholder: "Código",
-                                                style: { color: 'black' }
-                                                
+                                                style: { color: 'black' },
                                             }}
-                                            type="number"
                                         />
                                         <TextField
                                             label="Cantidad"
@@ -244,7 +229,7 @@ const ContentSalaReserva = () => {
                                                 placeholder: "Cantidad",
                                                 style: { color: 'black' },
                                             }}
-                                            type="number"
+                                            ype="number"
                                         />
 
                                         <Button
