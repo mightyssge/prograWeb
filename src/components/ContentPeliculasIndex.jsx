@@ -7,9 +7,9 @@ const ContentPeliculasIndex = ({ searchText }) => {
     const [filteredMovies, setFilteredMovies] = useState([]);
 
     const obtenerPeliculas = async () => {
-        const response = await fetch("/peliculas.json");
+        const response = await fetch(`http://localhost:8000/proyectos/ver-equipos?title=${searchText}`);
         const data = await response.json();
-        setMoviesData(data);
+        setMoviesData(data); 
     };
 
     useEffect(() => {
@@ -18,11 +18,7 @@ const ContentPeliculasIndex = ({ searchText }) => {
 
     useEffect(() => {
         // Verifica si searchText no es null ni undefined antes de filtrar
-        const filteredMovies = searchText
-            ? moviesData.filter((movie) => movie.title.toLowerCase().includes(searchText.toLowerCase()))
-            : moviesData;
-
-        setFilteredMovies(filteredMovies);
+        obtenerPeliculas();
     }, [moviesData, searchText]);
 
     return (
