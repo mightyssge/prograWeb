@@ -54,21 +54,36 @@ const ContentPeliculasReserva = () => {
         console.log('Username almacenado:', username);
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (Object.values(formData).some((value) => value.trim() === '')) {
             setError('Por favor, complete todos los campos.');
         } else {
-            console.log('Datos de reserva:', formData);
-            setShowConfirmation(true);
+            try {
+                const response = await fetch("http://localhost:8000/cines/guardar_reserva/", {
+                    method: "post",
+                    body: JSON.stringify({
+                        nombre: formData.nombre,
+                        apellido: formData.apellido,
+                        codigo: formData.codigo,
+                        cantidad: formData.cantidad,
+                        pelicula: peliculaActual.title,
+                        horario: peliculaActual.horarioSeleccionado,
+                    })
+                });
+                const data = await response.json();
+                
+                if (data.msg === "") {
+                   console.log("enviado correctamente"); 
+                }
+            } catch (error) {
+                console.error('Error al guardar la reserva:', error);
+                setError('Error al guardar la reserva. Por favor, inténtalo de nuevo.');
+            }
         }
     };
 
-    const handleCloseConfirmation = () => {
-        setShowConfirmation(false);
-        setError('');
-    };
     return (
         <Box flex={19} sx={{
             width: 'auto',
@@ -209,7 +224,7 @@ const ContentPeliculasReserva = () => {
                     </Box>
                 </Box>
             </Box>
-            <Dialog open={showConfirmation} onClose={handleCloseConfirmation}
+            {/*<Dialog open={showConfirmation} onClose={handleCloseConfirmation}
                 PaperProps={{
                     style: {
                         padding: '10px',
@@ -262,7 +277,7 @@ const ContentPeliculasReserva = () => {
                         Entendido
                     </Button>
                 </DialogActions>
-            </Dialog>
+                    </Dialog>*/}
         </Box >
     );
 };

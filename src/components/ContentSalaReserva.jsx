@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 import {
     Button,
     TextField,
@@ -14,8 +13,6 @@ import {
 } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
-
-
 const ContentSalaReserva = () => {
     const [formData, setFormData] = useState({
         nombre: '',
@@ -27,6 +24,8 @@ const ContentSalaReserva = () => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [error, setError] = useState('');
     const [thumbnail, setThumbnail] = useState('');
+
+    const [modalOpen, setModalOpen] = useState(false); 
 
     useEffect(() => {
         const storedUserData = sessionStorage.getItem('user');
@@ -44,7 +43,7 @@ const ContentSalaReserva = () => {
     const peliculaInfo = sessionStorage.getItem('seleccionHorario');
     const peliculaData = peliculaInfo ? JSON.parse(peliculaInfo) : null;
 
-    const lugar = sessionStorage.getItem('Lugar')
+    const lugar = sessionStorage.getItem('Lugar');
 
     const horarioInfo = sessionStorage.getItem('seleccionHorario');
     const horarioData = horarioInfo ? JSON.parse(horarioInfo) : null;
@@ -78,14 +77,34 @@ const ContentSalaReserva = () => {
         }));
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (Object.values(formData).some((value) => value.trim() === '')) {
             setError('Por favor, complete todos los campos.');
         } else {
-            console.log('Datos de reserva:', formData);
-            setShowConfirmation(true);
+            try {
+                const response = await fetch("http://localhost:8000/cines/guardar_reserva/", {
+                    method: "post",
+                    body: JSON.stringify({
+                        nombre: formData.nombre,
+                        apellido: formData.apellido,
+                        codigo: formData.codigo,
+                        cantidad: formData.cantidad,
+                        pelicula: peliculaData ? peliculaData.pelicula : 'Nombre de la Película',
+                        horario: horarioData ? horarioData.horario : 'Horario',
+                    })
+                });
+                const data = await response.json();
+                
+                if (data.msg === "") {
+                    setShowConfirmation(true);
+                    setModalOpen(true);
+                }
+            } catch (error) {
+                console.error('Error al guardar la reserva:', error);
+                setError('Error al guardar la reserva. Por favor, inténtalo de nuevo.');
+            }
         }
     };
 
@@ -229,7 +248,7 @@ const ContentSalaReserva = () => {
                                                 placeholder: "Cantidad",
                                                 style: { color: 'black' },
                                             }}
-                                            ype="number"
+                                            type="number"
                                         />
 
                                         <Button
@@ -290,44 +309,7 @@ const ContentSalaReserva = () => {
                     }}>
                     Reserva confirmada
                 </DialogTitle>
-                <DialogContent>
-                    <Box
-                        borderRadius="10px"
-                        border="1px dashed #ccc"
-                        padding="20px"
-                        sx={{
-                            background: 'linear-gradient(0deg, rgba(250, 117, 37, 0.04), rgba(250, 117, 37, 0.04))',
-                            color: '#FA7525',
-                            border: '1px dashed #FA7525',
-                        }}
-                    >
-                        <Typography variant="body1" sx={{
-                            paddingLeft: '25px',
-                        }}>
-                            {formData.nombre}
-                        </Typography>
-                        <Typography variant="body1" sx={{
-                            paddingLeft: '25px',
-                        }}>
-                            {formData.apellido}
-                        </Typography>
-                        <Typography variant="body1" sx={{
-                            paddingLeft: '25px',
-                        }}>
-                            {formData.codigo}
-                        </Typography>
-                        <Typography variant="body1" sx={{
-                            paddingLeft: '25px',
-                        }}>
-                            {formData.cantidad} pases
-                        </Typography>
-                    </Box>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseConfirmation} color="primary">
-                        Entendido
-                    </Button>
-                </DialogActions>
+                
             </Dialog>
         </Box>
     );
