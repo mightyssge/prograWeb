@@ -1,8 +1,6 @@
-import {useEffect, useState} from "react";
+import { useState } from "react";
 import { Container, TextField, Button, Typography, alpha } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import './style.css';
-
 
 const RegisterPage = () => {
   const navigate = useNavigate();  
@@ -13,27 +11,10 @@ const RegisterPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  const [usuarios, setUsuarios] = useState([]);
-
-  // Verifica si el usuario está autenticado al cargar la página de películas
-  const obtenerUsuarios = async () => {
-    const response = await fetch ("/usuario.json");
-    const data = await response.json()
-    setUsuarios(data)
-}
-
-useEffect(() => {
-  const user = sessionStorage.getItem("user");
-    if (user){
-      navigate("/home");
-    }
-    obtenerUsuarios()
-}, [navigate]);
-
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
-    // Validaciones
+    // Validaciones del formulario
     if (!nombre || !apellidos || !correo || !password || !confirmPassword) {
       setError("Todos los campos son obligatorios");
       return;
@@ -44,38 +25,31 @@ useEffect(() => {
       return;
     }
 
-    // Verificar si el correo ya existe
-    const correoExistente = usuarios.some((usuario) => usuario.correo === correo);
-    if (correoExistente) {
-      setError("El correo ya está registrado");
-      return;
+    try {
+      const response = await fetch("http://localhost:8000/cines/createuser", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre: nombre,
+          apellidos: apellidos,
+          correo: correo,
+          password: password,
+        }),
+      });
+
+      if (response.ok) {
+        // Registro exitoso, redirige al usuario a la página de inicio de sesión
+        navigate('/login');
+      } else {
+        // Error en el registro
+        const data = await response.json();
+        setError(data.msg || "Error en el registro");
+      }
+    } catch (error) {
+      setError("Error en el servidor. Inténtalo de nuevo más tarde.");
     }
-
-    // Verificar si el correo es institucional
-    if (!correo.endsWith("@aloe.ulima.edu.pe")) {
-      setError("Debes usar un correo institucional");
-      return;
-    }
-
-    // Si todas las validaciones pasan, puedes continuar con el registro
-    const nuevoUsuario = {
-      nombre,
-      apellidos,
-      correo,
-      password,
-    };
-
-    // Agregar el nuevo usuario al JSON local
-    usuarios.push(nuevoUsuario);
-
-    // Almacenar 'usuarios' en el localStorage
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
-
-    // Redirige al usuario a la página de login después de un registro exitoso
-    navigate('/login');
-
-    console.log("Usuario registrado:", nuevoUsuario);
-    console.log("Usuarios actualizados:", usuarios);
   };
 
   return (

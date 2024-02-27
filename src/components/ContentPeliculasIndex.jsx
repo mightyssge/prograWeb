@@ -6,18 +6,21 @@ const ContentPeliculasIndex = ({ searchText }) => {
     const [moviesData, setMoviesData] = useState([]);
     const [filteredMovies, setFilteredMovies] = useState([]);
 
-    const obtenerPeliculas = async () => {
-        const response = await fetch("/peliculas.json");
-        const data = await response.json();
-        setMoviesData(data);
-    };
-
     useEffect(() => {
+        const obtenerPeliculas = async () => {
+            try {
+                const response = await fetch("http://localhost:8000/peliculas.json");
+                const data = await response.json();
+                setMoviesData(data);
+            } catch (error) {
+                console.error("Error fetching peliculas.json", error);
+            }
+        };
+
         obtenerPeliculas();
     }, []);
 
     useEffect(() => {
-        // Verifica si searchText no es null ni undefined antes de filtrar
         const filteredMovies = searchText
             ? moviesData.filter((movie) => movie.title.toLowerCase().includes(searchText.toLowerCase()))
             : moviesData;
@@ -33,18 +36,16 @@ const ContentPeliculasIndex = ({ searchText }) => {
 
             <Box sx={{ mt: 3, padding: '19px 24px 0 24px' }}>
                 <Grid container spacing={2}>
-                    {filteredMovies.map((e) => (
+                    {filteredMovies.map((movie) => (
                         <CardPelicula
-                            key={e.id}
-                            movie={e}
-                            id={e.id}
-                            title={e.title}
-                            year={e.year}
-                            cast={e.cast}
-                            genres={e.genres}
-                            extract={e.extract}
-                            thumbnail={e.thumbnail}
-                            path={e.path}
+                            key={movie.pk}
+                            movie={movie}
+                            id={movie.pk}
+                            title={movie.fields.title}
+                            year={movie.fields.year}
+                            genres={movie.fields.generos}
+                            thumbnail={movie.fields.thumbnail}
+                            path={movie.fields.path}
                         />
                     ))}
                 </Grid>
