@@ -1,37 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Button, TextField, Typography, Box, Paper, Dialog, DialogTitle, Grid, DialogContent, DialogActions } from '@mui/material';
-import CardReserva from './CardReserva';
-import CardImageReserva from './CardImageReserva';
-import CardFormularioAdentro from './CardFormularioAdentro';
-import { useLocation } from 'react-router-dom';
 
-const ContentPeliculasReserva = () => {
-    const location = useLocation();
-    const { peliculaActual } = location.state || {};
+import {
+    Button,
+    TextField,
+    Typography,
+    Box,
+    Icon,
+    Paper,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions
+} from '@mui/material';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 
-    //const [username, setUsername] = useState('');
 
-    useEffect(() => {
-        if (peliculaActual) {
-            console.log('Información de la película en Reserva:', peliculaActual);
-        }
 
-        const storedUsername = sessionStorage.getItem('user');
-        if (storedUsername) {
-            const userData = JSON.parse(storedUsername);
-            //setUsername(userData);
-
-            
-            setFormData((prevData) => ({
-                ...prevData,
-                nombre: userData.nombre || '',
-                apellido: userData.apellido || '',
-                codigo: userData.correo.substring(0, userData.correo.indexOf("@")) || '',
-                cantidad: prevData.cantidad || '',
-            }));
-        }
-    }, [peliculaActual]);
-
+const ContentSalaReserva = () => {
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
@@ -41,6 +26,49 @@ const ContentPeliculasReserva = () => {
 
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [error, setError] = useState('');
+    const [thumbnail, setThumbnail] = useState('');
+
+    useEffect(() => {
+        const storedUserData = sessionStorage.getItem('user');
+        if (storedUserData) {
+            const userData = JSON.parse(storedUserData);
+            setFormData({
+                nombre: userData.nombre || '',
+                apellido: userData.apellido || '',
+                codigo: userData.correo.substring(0, userData.correo.indexOf("@")) || '',
+                cantidad: '',
+            });
+        }
+    }, []);
+
+    const peliculaInfo = sessionStorage.getItem('seleccionHorario');
+    const peliculaData = peliculaInfo ? JSON.parse(peliculaInfo) : null;
+
+    const lugar = sessionStorage.getItem('Lugar')
+
+    const horarioInfo = sessionStorage.getItem('seleccionHorario');
+    const horarioData = horarioInfo ? JSON.parse(horarioInfo) : null;
+
+    useEffect(() => {
+        const fetchThumbnail = async () => {
+            try {
+                const response = await fetch('/peliculas.json');
+                const peliculas = await response.json();
+
+                const selectedMovie = peliculas.find(movie => movie.title === peliculaData.pelicula);
+
+                if (selectedMovie) {
+                    setThumbnail(selectedMovie.thumbnail);
+                }
+            } catch (error) {
+                console.error('Error al obtener el thumbnail:', error);
+            }
+        };
+
+        if (peliculaData && peliculaData.pelicula) {
+            fetchThumbnail();
+        }
+    }, [peliculaData]);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -49,10 +77,6 @@ const ContentPeliculasReserva = () => {
             [name]: value,
         }));
     };
-
-    //const handlePrintUsername = () => {
-    //    console.log('Username almacenado:', username);
-    //};
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -82,6 +106,7 @@ const ContentPeliculasReserva = () => {
         setShowConfirmation(false);
         setError('');
     };
+
     return (
         <Box flex={19} sx={{
             width: 'auto',
@@ -89,7 +114,6 @@ const ContentPeliculasReserva = () => {
             padding: '24px',
             gap: '10px'
         }}>
-
             <Box sx={{
                 width: 'auto',
                 height: 'auto',
@@ -117,21 +141,45 @@ const ContentPeliculasReserva = () => {
                     height: 'auto',
                     padding: '0px 24px 0px 24px'
                 }}>
+                    <Box sx={{
+                        width: 'auto',
+                        height: 'auto',
+                        marginTop: '10px'
+                    }}>
+                        <Typography variant="h4" component="div" sx={{
+                            width: 'auto',
+                            height: 'auto',
 
-                    <CardReserva peliculaActual={peliculaActual} />
+                        }}>
+                            {peliculaData ? peliculaData.pelicula : 'Nombre de la Película'}
 
-
-
-
+                        </Typography>
+                        <Box sx={{
+                            display: 'flex',
+                            gap: 2,
+                            alignItems: 'center',
+                            paddingTop: '10px',
+                            paddingBottom: '20px ',
+                            height: 'auto',
+                        }}>
+                            <Icon sx={{
+                                color: '#0000008F'
+                            }} aria-label="Location">
+                                <LocationOnIcon />
+                            </Icon>
+                            <Typography color="#2196F3" variant="subtitle1" component="div" sx={{ marginLeft: '5px' }}>
+                                {lugar}
+                            </Typography>
+                        </Box>
+                    </Box>
                     <Box sx={{
                         width: 'auto',
                         height: 'auto',
                         gap: '24px',
                         display: 'flex',
-                        justifyContent: 'space-between'
-
+                        justifyContent: 'space-between',
                     }}>
-                        <Grid item md={2} sx={{
+                        <Box sx={{
                             width: 'auto',
                             height: 'auto',
                             paddingLeft: '0px',
@@ -139,7 +187,12 @@ const ContentPeliculasReserva = () => {
                         }}>
                             <Box style={{ paddingTop: '20px', paddingRight: '0px', paddingLeft: '0px', paddingBottom: '20px', marginLeft: '-45px' }}>
                                 <Paper elevation={3} style={{ padding: '20px', boxShadow: '5px 5px 15px 0px rgba(0,0,0,0.1)' }}>
-                                    <CardFormularioAdentro peliculaActual={peliculaActual} />
+                                    <Typography variant="h5" component="div" gutterBottom>
+                                        Información de reserva
+                                    </Typography>
+                                    <Typography variant="h6" component="div" gutterBottom style={{ borderBottom: '1px solid rgb(224, 224, 224)' }}>
+                                        {horarioData ? horarioData.horario : 'Horario'}
+                                    </Typography>
                                     <form onSubmit={handleSubmit}>
                                         <TextField
                                             label="Nombre"
@@ -152,7 +205,6 @@ const ContentPeliculasReserva = () => {
                                                 placeholder: "Nombre",
                                                 style: { color: 'black' },
                                             }}
-                                            
                                         />
                                         <TextField
                                             label="Apellido"
@@ -165,9 +217,8 @@ const ContentPeliculasReserva = () => {
                                                 placeholder: "Apellido",
                                                 style: { color: 'black' },
                                             }}
-                                            
                                         />
-                                        <TextField 
+                                        <TextField
                                             label="Código"
                                             fullWidth
                                             margin="normal"
@@ -176,7 +227,8 @@ const ContentPeliculasReserva = () => {
                                             onChange={handleChange}
                                             InputProps={{
                                                 placeholder: "Código",
-                                                style: { color: 'black' },
+                                                style: { color: 'black' }
+                                                
                                             }}
                                             type="number"
                                         />
@@ -187,15 +239,12 @@ const ContentPeliculasReserva = () => {
                                             name="cantidad"
                                             value={formData.cantidad}
                                             onChange={handleChange}
-                                            onInput={(e) => {
-                                                e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 5);
-                                            }}
                                             style={{ marginBottom: '20px' }}
                                             InputProps={{
                                                 placeholder: "Cantidad",
                                                 style: { color: 'black' },
                                             }}
-                                            type="number" 
+                                            type="number"
                                         />
 
                                         <Button
@@ -204,7 +253,7 @@ const ContentPeliculasReserva = () => {
                                             color="secondary"
                                             fullWidth
                                             style={{ backgroundColor: 'rgb(250, 117, 37)', color: 'white', padding: '15px', fontWeight: 'bold' }}
-                                            
+
                                         >
                                             Reservar
                                         </Button>
@@ -217,10 +266,27 @@ const ContentPeliculasReserva = () => {
                                     </form>
                                 </Paper>
                             </Box>
-                        </Grid>
-                        <Grid item md={4}>
-                            <CardImageReserva peliculaActual={peliculaActual} />
-                        </Grid>
+                        </Box>
+                        <Box sx={{
+                            width: 'auto',
+                            height: 'auto',
+                            borderRadius: '4px',
+                            padding: '0px',
+                            marginLeft: '-10px'
+                        }}>
+                            <Paper sx={{
+                                borderRadius: '0',
+                                padding: '20px',
+                                boxShadow: 'none',
+                            }}>
+                                <img
+                                    src={thumbnail}
+                                    alt="Imagen"
+                                    style={{ maxWidth: '200%', height: 'auto' }}
+                                />
+                            </Paper>
+                        </Box>
+
                     </Box>
                 </Box>
             </Box>
@@ -278,8 +344,8 @@ const ContentPeliculasReserva = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </Box >
+        </Box>
     );
 };
 
-export default ContentPeliculasReserva;
+export default ContentSalaReserva;

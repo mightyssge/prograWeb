@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, Button, TextField, Divider, Stack, Grid, Card, Paper, Avatar, CardHeader } from '@mui/material';
+import {  Box,Grid, Card } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
-import { Link, useLocation } from "react-router-dom"
-import { blue, red } from '@mui/material/colors';
+import {  useLocation } from "react-router-dom"
 import CardMedia from '@mui/material/CardMedia';
 import PeliculasDisponibles from './PeliculasDisponibles';
 
@@ -26,6 +25,9 @@ const ContentSalaItem = () => {
   useEffect(() => {
     obtenerPeliculas()
   }, [])
+  useEffect(() => {
+    sessionStorage.setItem('Lugar', currentSala.name);
+}, [currentSala]);
 
   // Utilizando map para extraer el valor de "pelicula" de cada objeto en la lista
   const titulosFiltrados = currentSala.peliculas.map(pelicula => pelicula.pelicula);

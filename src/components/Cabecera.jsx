@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -80,76 +80,71 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     }),
   }),
 );
+
 const Header = ({onTextfieldChange}) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
 
   const handleDrawerClose = () => {
     setOpen(false);
   };
 
+  
+  
+  const user = sessionStorage.getItem("user");
+  const userJSON = user ? JSON.parse(user) : null;
+
   return (
-    <Box sx={{ flexGrow: 1, mb: 8 }} >
+    <Box sx={{ flexGrow: 1, mb: 8 }}>
       <CssBaseline />
-
-
 
       <AppBar position="fixed" sx={{ background: "rgb(250, 117, 37)" }}>
         <Toolbar>
-          
           <IconButton
             size="large"
             edge="start"
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
-            onClick={() => { setOpen(!open) }}
+            onClick={() => {
+              setOpen(!open);
+            }}
           >
             <MenuIcon />
           </IconButton>
 
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Salas de cine ULima
-          </Typography>
+          {userJSON ? (
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
+                Hola {userJSON.nombre}
+              </Typography>
+            ) : (
+              <div>nada</div>
+            )}
+
+          
+
 
           <StarIcon sx={{ mx: '8px' }} />
           <StarIcon sx={{ mx: '8px' }} />
           <StarIcon sx={{ mx: '8px' }} />
           <StarIcon sx={{ mx: '8px' }} />
           <StarIcon sx={{ mx: '8px' }} />
-
         </Toolbar>
       </AppBar>
 
-
-
       <Drawer variant="permanent" open={open}>
-
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
-          
         </DrawerHeader>
 
         <Divider />
-        <Sidebar filter={onTextfieldChange} />
+        <Sidebar filter={onTextfieldChange}/>
+      </Drawer>
+    </Box>
+  );
+};
 
-
-
-        
-
-
-
-
-      </Drawer >
-
-    </Box >
-    )}
-  
-export default  Header ;
-  
+export default Header;

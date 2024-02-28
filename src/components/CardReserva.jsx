@@ -1,7 +1,7 @@
 import React from 'react';
 
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { Button, TextField, Typography, Box, Icon, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import {Typography, Box, Icon } from '@mui/material';
 
 const CardReserva = ({ peliculaActual}) => {
     return (

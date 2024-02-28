@@ -1,11 +1,11 @@
 
-import { Container, Box, Button, TextField, Divider, Stack, Card, Paper, Avatar, CardHeader } from '@mui/material';
+import { Box} from '@mui/material';
 import Typography from '@mui/material/Typography';
 import '@fontsource/roboto'; 
 import DetallePelis from './DetallePelis';
 import { useParams } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
-import { Grid } from '@mui/material';
+
 
 
 
@@ -13,6 +13,8 @@ const ContentPeliculasItem = () => {
   const [moviesData, setMoviesData] = useState([]);
   const [salasData, setSalasData] = useState([])
   const { path } = useParams();
+
+  
 
   const obtenerPeliculas = async () => {
     try {

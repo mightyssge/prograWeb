@@ -1,13 +1,11 @@
 import Header from '../components/Cabecera.jsx';
+import ContentSalaReserva from '../components/ContentSalaReserva.jsx';
 import { Container,Stack } from "@mui/material";
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ContentPeliculasItem from '../components/ContentPeliculasItem.jsx'
 
 
-function PeliculasItemPage() {
-
-  
+function PeliculasReservaPage() {
 
   const navigate = useNavigate();
 
@@ -21,19 +19,17 @@ function PeliculasItemPage() {
     }
   }, [navigate]);
 
+
     return (
 
-      //esto es el contenido de los menus
       <Container className='container'>
         <Header/>
         <Stack direction="row" spacing={2} justifyContent="space-between">
-        
-          <ContentPeliculasItem/>
-         
+          <ContentSalaReserva/>
         </Stack>
       </Container>
     
     );
   }
 
-export default PeliculasItemPage;
+export default PeliculasReservaPage;
