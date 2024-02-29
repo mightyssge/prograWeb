@@ -11,7 +11,7 @@ const ContentSalasIndex = ({ searchText }) => {
     const [salasData, setSalasData] = useState([])
 
     const obtenerSalas = async () => {
-        const response = await fetch(`http://localhost:8000/cines/ver-salas?nombre=${searchText}`)
+        const response = await fetch(`http://localhost:8000/cines/ver-salas?path=${searchText}`)
         const data = await response.json()
         setSalasData(data)
         const listaSalasStr = JSON.stringify(data)
