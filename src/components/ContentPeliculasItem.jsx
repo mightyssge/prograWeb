@@ -36,6 +36,8 @@ const ContentPeliculasItem = () => {
           year={pelicula.anho}
           thumbnail={pelicula.thumbnail}
           extract={pelicula.extract}
+          genres={pelicula.generos}
+          actores={pelicula.actores}
         />
       )}
     </Box>

@@ -3,7 +3,7 @@ import { Typography, Chip, Container, Box, Grid, Card, Avatar ,Button } from '@m
 import { useNavigate } from 'react-router-dom';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
-const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
+const DetallePelis = ({ title, year, thumbnail, extract, genres, salas,actores }) => {
   const navigate = useNavigate();
   const [peliculaActual, setPeliculaActual] = useState({ title, year, thumbnail });
 
@@ -69,7 +69,7 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
               {extract}
             </Typography>
             <Box sx={{ mt: '16px', display: 'flex', gap: '8px', margin: '5%' }}>
-            {genres && genres.map((genre, index) => (
+            {genres.map((genre, index) => (
                 <Chip
                   key={index}
                   label={genre}
@@ -79,6 +79,19 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
                 />
               ))}
             </Box>
+            <Box sx={{ mt: '16px', display: 'flex', gap: '8px', margin: '5%' }}>
+    {actores.map((actor, index) => (
+        <Chip
+            key={index}
+            label={actor}
+            variant="outlined"
+            color="secondary"
+            style={{ padding: '4px', borderRadius: '100px' }}
+        />
+    ))}
+</Box>
+
+
           </Card>
         </Grid>
       </Grid>
