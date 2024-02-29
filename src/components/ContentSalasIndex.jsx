@@ -46,7 +46,7 @@ const ContentSalasIndex = ({ searchText }) => {
                                     address={sala.direccion}
                                     //city={sala.city}
                                     path={sala.path}
-                                    formato={sala.formats}
+                                    formato={sala.formato}
                                     img={sala.imagen}
                                 />)
                         })

@@ -37,7 +37,7 @@ function CardSala(props) {
                         </Typography>
                         <Box sx={{ mt: '16px', display: 'flex', gap: '8px' }} spacing={8}>
                             {
-                                props.formats && props.formats.map((label) => {
+                                props.formato && props.formato.map((label) => {
                                     return <><Chip label={label} variant="filled" color="default" style={{ padding: "4px", borderRadius: "100px" }} /></>
                                 }
                                 )
