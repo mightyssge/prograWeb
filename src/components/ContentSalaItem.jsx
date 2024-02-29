@@ -32,7 +32,7 @@ const ContentSalaItem = () => {
 
       {salas && (
         <DetalleSalas
-          name={salas.name}
+          name={salas.nombre}
           address={salas.direccion}
           img={salas.imagen}
           formato={salas.formato}
