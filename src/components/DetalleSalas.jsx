@@ -1,15 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
-import { Typography, Chip, Container, Box, Grid, Card, Avatar ,Button } from '@mui/material';import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { Typography, Chip, Container, Box, Grid, Card, Avatar, Button } from '@mui/material'; import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useNavigate } from "react-router-dom"
 import CardMedia from '@mui/material/CardMedia';
 
-const DetalleSalas = ({ name, address, img, formato, peliculas, funciones}) => {
+const DetalleSalas = ({ name, address, img, formato, peliculas, funciones }) => {
     const navigate = useNavigate();
     const [salaActual, setSalaActual] = useState({ name, address, img });
 
     console.log(salaActual)
-    
+
     console.log(funciones)
 
     const handleClick = (index, horarioIndex) => {
@@ -52,14 +52,14 @@ const DetalleSalas = ({ name, address, img, formato, peliculas, funciones}) => {
                     </Grid>
                     <Grid item sm={4}>
                         <Card sx={{ height: "100%" }}>
-                            <header typeof='title'>
-                                <Typography variant='h5' style={{ margin: "8%" }} > {name}</Typography>
-                            </header>
-                            <Typography variant='body1' style={{ marginLeft: "4%", fontSize: "16px", fontFamily: "Roboto", paddingLeft: "4%" }} >
-                                numero <br />
-                                <br />Tipos de salas disponibles:
-                                <Box sx={{ mt: '16px', display: 'flex', gap: '8px' }} spacing={8}>
-
+                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                                <header typeof='title' style={{ marginBottom: '16px' }}>
+                                    <Typography variant='h5'>{name}</Typography>
+                                </header>
+                                <Typography variant='body1' style={{ fontSize: "16px", fontFamily: "Roboto", textAlign: "center" }}>
+                                    Tipos de salas disponibles:
+                                </Typography>
+                                <Box sx={{ mt: '16px', display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                     {formato.map((formato, index) => (
                                         <Chip
                                             key={index}
@@ -70,8 +70,10 @@ const DetalleSalas = ({ name, address, img, formato, peliculas, funciones}) => {
                                         />
                                     ))}
                                 </Box>
-                            </Typography>
+                            </Box>
                         </Card>
+
+
                     </Grid>
                 </Grid>
 
@@ -80,7 +82,7 @@ const DetalleSalas = ({ name, address, img, formato, peliculas, funciones}) => {
                         Peliculas disponibles
                     </Typography>
                 </Grid>
-                
+
                 <Box sx={{ mt: 8, width: "55%", height: "100%" }}>
                     {
                         funciones && funciones.map((funcion, index) => (
