@@ -9,15 +9,16 @@ import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import { useNavigate } from 'react-router-dom'
 
-
 function CardSala(props) {
 
     const navigate = useNavigate()
 
     const cardOnClick = () => {
-        navigate(props.path, { state: { sala: props.sala } })
+        
+        sessionStorage.setItem('salaNombre', props.name); 
+        navigate(props.path, { state: { sala: props.sala } });
     }
-
+    
     return (
         <Grid item md={6} >
 
@@ -50,4 +51,4 @@ function CardSala(props) {
     )
 }
 
-export default CardSala
+export default CardSala;

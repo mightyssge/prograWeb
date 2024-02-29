@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, TextField, Typography, Box, Paper, Dialog, DialogTitle, Grid, DialogContent, DialogActions } from '@mui/material';
+import { Button, TextField, Typography, Box, Paper, Grid, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import CardReserva from './CardReserva';
 import CardImageReserva from './CardImageReserva';
 import CardFormularioAdentro from './CardFormularioAdentro';
@@ -10,6 +10,14 @@ const ContentPeliculasReserva = () => {
     const { peliculaActual } = location.state || {};
 
     const [username, setUsername] = useState('');
+    const [openDialog, setOpenDialog] = useState(false); // Estado para controlar si el diálogo está abierto
+    const [formData, setFormData] = useState({
+        nombre: '',
+        apellido: '',
+        codigo: '',
+        cantidad: '',
+    });
+    const [error, setError] = useState('');
 
     useEffect(() => {
         if (peliculaActual) {
@@ -18,29 +26,18 @@ const ContentPeliculasReserva = () => {
 
         const storedUsername = sessionStorage.getItem('user');
         if (storedUsername) {
-            const userData = JSON.parse(storedUsername);
-            setUsername(userData);
+            const user = JSON.parse(storedUsername);
+            setUsername(user);
 
-            
             setFormData((prevData) => ({
                 ...prevData,
-                nombre: userData.nombre || '',
-                apellido: userData.apellidos || '',
-                codigo: userData.correo || '',
+                nombre: user.nombre || '',
+                apellido: user.apellidos || '',
+                codigo: user.correo || '',
                 cantidad: prevData.cantidad || '',
             }));
         }
     }, [peliculaActual]);
-
-    const [formData, setFormData] = useState({
-        nombre: '',
-        apellido: '',
-        codigo: '',
-        cantidad: '',
-    });
-
-    const [showConfirmation, setShowConfirmation] = useState(false);
-    const [error, setError] = useState('');
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -48,10 +45,6 @@ const ContentPeliculasReserva = () => {
             ...prevData,
             [name]: value,
         }));
-    };
-
-    const handlePrintUsername = () => {
-        console.log('Username almacenado:', username);
     };
 
     const handleSubmit = async (event) => {
@@ -73,9 +66,9 @@ const ContentPeliculasReserva = () => {
                     })
                 });
                 const data = await response.json();
-                
+
                 if (data.msg === "") {
-                   console.log("enviado correctamente"); 
+                    console.log("enviado correctamente");
                 }
             } catch (error) {
                 console.error('Error al guardar la reserva:', error);
@@ -83,6 +76,21 @@ const ContentPeliculasReserva = () => {
             }
         }
     };
+
+    const handleOpenDialog = () => {
+        setOpenDialog(true); // Abrir el diálogo de confirmación
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false); // Cerrar el diálogo de confirmación
+    };
+
+    useEffect(() => {
+        if (peliculaActual && openDialog) {
+            console.log('Mostrar diálogo de confirmación');
+            // Aquí podrías agregar más lógica si es necesario antes de abrir el diálogo de confirmación
+        }
+    }, [peliculaActual, openDialog]);
 
     return (
         <Box flex={19} sx={{
@@ -121,9 +129,6 @@ const ContentPeliculasReserva = () => {
                 }}>
 
                     <CardReserva peliculaActual={peliculaActual} />
-
-
-
 
                     <Box sx={{
                         width: 'auto',
@@ -187,7 +192,6 @@ const ContentPeliculasReserva = () => {
                                             value={formData.cantidad}
                                             onChange={handleChange}
                                             onInput={(e) => {
-                                                
                                                 e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 5);
                                             }}
                                             style={{ marginBottom: '20px' }}
@@ -195,7 +199,7 @@ const ContentPeliculasReserva = () => {
                                                 placeholder: "Cantidad",
                                                 style: { color: 'black' },
                                             }}
-                                            type="number" 
+                                            type="number"
                                         />
 
                                         <Button
@@ -204,7 +208,7 @@ const ContentPeliculasReserva = () => {
                                             color="secondary"
                                             fullWidth
                                             style={{ backgroundColor: 'rgb(250, 117, 37)', color: 'white', padding: '15px', fontWeight: 'bold' }}
-                                            
+                                            onClick={handleOpenDialog}
                                         >
                                             Reservar
                                         </Button>
@@ -224,7 +228,8 @@ const ContentPeliculasReserva = () => {
                     </Box>
                 </Box>
             </Box>
-            {/*<Dialog open={showConfirmation} onClose={handleCloseConfirmation}
+
+            <Dialog open={openDialog} onClose={handleCloseDialog}
                 PaperProps={{
                     style: {
                         padding: '10px',
@@ -240,7 +245,7 @@ const ContentPeliculasReserva = () => {
                     Reserva confirmada
                 </DialogTitle>
                 <DialogContent>
-                    <Box
+                <Box
                         borderRadius="10px"
                         border="1px dashed #ccc"
                         padding="20px"
@@ -273,11 +278,11 @@ const ContentPeliculasReserva = () => {
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseConfirmation} color="primary">
+                    <Button onClick={handleCloseDialog} color="primary">
                         Entendido
                     </Button>
                 </DialogActions>
-                    </Dialog>*/}
+            </Dialog>
         </Box >
     );
 };

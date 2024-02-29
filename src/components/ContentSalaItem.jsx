@@ -3,56 +3,50 @@ import {  Box,Grid, Card } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
-import {  useLocation } from "react-router-dom"
+import {  useNavigate } from "react-router-dom"
 import CardMedia from '@mui/material/CardMedia';
 import PeliculasDisponibles from './PeliculasDisponibles';
 
 
 
 
-const ContentSalaItem = () => {
+const ContentSalaItem = ({ name, img, address, formato, peliculas}) => {
 
-  const location = useLocation();
-  const currentSala = location.state?.sala
+  const navigate = useNavigate();
+  const[salaActual, setSalaActual] = useState({name, address, img});
+
+  console.log(salaActual)
+
+  const handleClick = (index, horarioIndex ) => {
+    const peliculaSeleccionada = peliculas[index];
+    const horarioSeleccionado = peliculaSeleccionada.horarios[horarioIndex];
+
+    setSalaActual({
+      name,
+      img,
+      address,
+      horarioSeleccionado,
+      pelicula: peliculaSeleccionada.pelicula,
+    });
+
+    navigate('/reserva2', {state: { salaActual: { name, img, address, horarioSeleccionado, pelicula: peliculaSeleccionada.pelicula}}})
+  };
 
 
-  const [moviesData, setMoviesData] = useState([])
-  const obtenerPeliculas = async () => {
-    const response = await fetch("/peliculas.json")
-    const data = await response.json()
-    setMoviesData(data)
-  }
-  useEffect(() => {
-    obtenerPeliculas()
-  }, [])
-  useEffect(() => {
-    sessionStorage.setItem('Lugar', currentSala.name);
-}, [currentSala]);
-
-  // Utilizando map para extraer el valor de "pelicula" de cada objeto en la lista
-  const titulosFiltrados = currentSala.peliculas.map(pelicula => pelicula.pelicula);
-  const currentPeliculasforSala = moviesData.filter(pelicula => titulosFiltrados.includes(pelicula.title));
-  
-  console.log(currentPeliculasforSala)
-
-  if (currentPeliculasforSala == null) {
-    // Manejar el caso donde currentSala es undefined, por ejemplo, redirigir a una página de error.
-    return <p>La sala no existe o no se ha especificado.</p>;
-  }
 
   return (
-
+    
     <Box flex={2} >
       <Typography variant="h4" component="div" sx={{ paddingTop: '16px', paddingBottom: '16px', borderBottom: '1px solid rgb(224, 224, 224)' }}>
         Salas
       </Typography>
       <Box sx={{ padding: 5, mt: 5 }}>
         <Grid item md={4} sx={{ mb: 1 }} >
-          <Typography variant="h4" sx={{ fontSize: "40px", fontFamily: "Roboto" }}  >{currentSala.name}</Typography>
+          <Typography variant="h4" sx={{ fontSize: "40px", fontFamily: "Roboto" }}  >{name}</Typography>
           <Grid sx={{ display: "flex", my: 3 }}>
             <LocationOnIcon color="action" sx={{ marginRight: "15px" }} ></LocationOnIcon>
             <Typography variant="subtitle2" color="#2196F3" fontWeight="600" sx={{}}>
-              {currentSala.city} - {currentSala.address}
+              {address}
             </Typography>
           </Grid>
         </Grid>
@@ -62,25 +56,25 @@ const ContentSalaItem = () => {
             <Card >
               <CardMedia
                 component="img"
-                image={currentSala.img}
+                image={img}
               />
             </Card>
           </Grid>
           <Grid item sm={4}>
             <Card sx={{ height: "100%" }}>
               <header typeof='title'>
-                <Typography variant='h5' style={{ margin: "8%" }} > {currentSala.description}</Typography>
+                <Typography variant='h5' style={{ margin: "8%" }} > {name}</Typography>
               </header>
               <Typography variant='body1' style={{ marginLeft: "4%", fontSize: "16px", fontFamily: "Roboto", paddingLeft: "4%" }} >
-                Nro Telefono: <br />{currentSala.phoneNumber} <br />
+                {/*Nro Telefono: <br />{currentSala.phoneNumber}*/} <br />
                 <br />Tipos de salas disponibles:
                 <Box sx={{ mt: '16px', display: 'flex', gap: '8px' }} spacing={8}>
-                  {
-                    currentSala.formats.map((label) => {
+                  {/*
+                    formato.map((label) => {
                       return <><Chip label={label} variant="filled" color="default" style={{ padding: "4px", borderRadius: "100px" }} /></>
                     }
                     )
-                  }</Box>
+                  */}</Box>
               </Typography>
             </Card>
           </Grid>
@@ -95,8 +89,8 @@ const ContentSalaItem = () => {
 
 
 
-        <Box sx={{ mt: 5, width: "70%", height: "140%" }} >
-          {/*Inicio */}
+        {/*<Box sx={{ mt: 5, width: "70%", height: "140%" }} >
+        
           {
             currentSala.peliculas.map((funcion) => {
               return (
@@ -109,12 +103,10 @@ const ContentSalaItem = () => {
             })
           }
           
-        </Box>
+        </Box>*/}
       </Box >
-
+        
     </Box>
-
-
 
   );
 };
