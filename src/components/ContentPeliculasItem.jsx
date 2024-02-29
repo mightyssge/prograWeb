@@ -5,15 +5,16 @@ import '@fontsource/roboto';
 import DetallePelis from './DetallePelis';
 import { useParams } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
-
+import {useLocation} from 'react-router-dom';
 
 
 
 const ContentPeliculasItem = () => {
   const [moviesData, setMoviesData] = useState([]);
   const [salasData, setSalasData] = useState([])
+  const [peliculaEspecifica, setPeliculaEspecifica] = useState(null);
   const { path } = useParams();
-
+  const location = useLocation();
   
 
   const obtenerPeliculas = async () => {
@@ -35,13 +36,19 @@ const ContentPeliculasItem = () => {
     console.error("Error fetching salas.json", error);
   }
 };
+
+const obtenerFunciones = async() => {
+    
+}
+
   useEffect(() => {
-    obtenerPeliculas();
-    obtenerSalas();
+    //obtenerPeliculas();
+    //obtenerSalas();
+    setPeliculaEspecifica(location.state.movie)
   }, []);
 
  
-  const peliculaEspecifica = moviesData.find((pelicula) => pelicula.path === path);
+  
 
   return (
     <Box flex={2} sx={{ p: 4 }}>
@@ -57,10 +64,10 @@ const ContentPeliculasItem = () => {
           extract={peliculaEspecifica.extract}
           genres={peliculaEspecifica.genres}
           path={peliculaEspecifica.path}
-          salas={peliculaEspecifica.salas.map(sala => {
+          /* salas={peliculaEspecifica.salas.map(sala => {
             const salaInfo = salasData.find(s => s.name === sala.sala);
             return { ...sala, ...salaInfo };
-          })} 
+          })}  */
           
 
         />

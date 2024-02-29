@@ -3,11 +3,11 @@ import { Typography, Chip, Container, Box, Grid, Card, Avatar ,Button } from '@m
 import { useNavigate } from 'react-router-dom';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
-const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
+const DetallePelis = ({ title, year, thumbnail, extract, genres }) => {
   const navigate = useNavigate();
   const [peliculaActual, setPeliculaActual] = useState({ title, year, thumbnail });
-
-  console.log(peliculaActual)
+  const salas = null
+  console.log("pelicula actual"+peliculaActual)
 
   const handleClick = (index, horarioIndex) => {
     const salaSeleccionada = salas[index];
@@ -88,7 +88,7 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
         </Typography>
       </Grid>
       <Box sx={{ mt: 8, width: "55%", height: "100%" }}>
-        {salas && salas.map((sala, index) => (
+      {/* salas ? {salas.map((sala, index) => (
           <Grid key={index} style={{ marginBottom: "18%" }}>
             <Grid item md={4}>
               <Container style={{ width: "100%", height: "100%" }}>
@@ -99,7 +99,7 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
                     </Typography>
                   </Avatar>
                   <Typography variant='h6' style={{ marginLeft: "2%", marginTop: "5px", fontFamily: "Roboto" }}>
-                    <b>{sala.sala}</b>
+                    <b>{sala.sala}</b> Nombre de la sala
                   </Typography>
                 </Container>
                 <Typography variant='body1' style={{ marginLeft: "5%", fontFamily: "Roboto" }}>
@@ -134,7 +134,7 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
               </Grid>
             </Grid>
           </Grid>
-        ))}
+        ))}:{"No hay horarios disponibles"}   */}
       </Box>
     </Box>
   );
