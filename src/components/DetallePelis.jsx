@@ -3,13 +3,12 @@ import { Typography, Chip, Container, Box, Grid, Card, Avatar ,Button } from '@m
 import { useNavigate } from 'react-router-dom';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
-const DetallePelis = ({ title, year, thumbnail, extract, genres }) => {
+const DetallePelis = ({ title, year, thumbnail, extract, genres ,funciones}) => {
   const navigate = useNavigate();
   const [peliculaActual, setPeliculaActual] = useState({ title, year, thumbnail });
-  const salas = null
   console.log("pelicula actual"+peliculaActual)
 
-  const handleClick = (index, horarioIndex) => {
+  /* const handleClick = (index, horarioIndex) => {
     const salaSeleccionada = salas[index];
     const horarioSeleccionado = salaSeleccionada.horarios[horarioIndex];
   
@@ -24,7 +23,7 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres }) => {
     console.log(`Información de la película: ${title}, Año: ${year}, Sala: ${salaSeleccionada.sala}, Horario seleccionado: ${horarioSeleccionado}, Img: ${thumbnail}`);
   
     navigate('/reserva', { state: { peliculaActual: { title, year, thumbnail, horarioSeleccionado, sala: salaSeleccionada.sala } } });
-  };
+  }; */
 
   return (
     <Box sx={{ padding: 4, mt: 5 }}>
@@ -88,31 +87,31 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres }) => {
         </Typography>
       </Grid>
       <Box sx={{ mt: 8, width: "55%", height: "100%" }}>
-      {/* salas ? {salas.map((sala, index) => (
-          <Grid key={index} style={{ marginBottom: "18%" }}>
+        {
+          funciones && funciones.map((funcion, index) => (
+            <Grid key={index} style={{ marginBottom: "18%" }}>
             <Grid item md={4}>
               <Container style={{ width: "100%", height: "100%" }}>
                 <Container style={{ display: "flex", marginBottom: "4%" }}>
                   <Avatar variant='rounded'>
                     <Typography >
-                      {sala.siglas}
+                      {funcion.salasiglas}
                     </Typography>
                   </Avatar>
                   <Typography variant='h6' style={{ marginLeft: "2%", marginTop: "5px", fontFamily: "Roboto" }}>
-                    <b>{sala.sala}</b> Nombre de la sala
+                    <b>{funcion.salanombre}</b> 
                   </Typography>
                 </Container>
                 <Typography variant='body1' style={{ marginLeft: "5%", fontFamily: "Roboto" }}>
-                  {sala.address}
+                  {funcion.salaadress}
                 </Typography>
               </Container>
               <Grid sx={{ display: "flex", ml: 4, mb: 5}}>
-                {sala.horarios.map((horario, horarioIndex) => (
-                  <Button onClick={() => handleClick(index, horarioIndex)}
+                {funcion.ventanas.map((horario, horarioIndex) => ( 
+                  <Button  /* onClick={() => handleClick(index, horarioIndex)} */
                     key={horarioIndex}
                     sx={{
                       marginTop: 2,
-                      width: '100px',
                       height: '28px',
                       border: '1px dashed #9747FF',
                       borderRadius: '8px',
@@ -134,7 +133,8 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres }) => {
               </Grid>
             </Grid>
           </Grid>
-        ))}:{"No hay horarios disponibles"}   */}
+        ))}
+      
       </Box>
     </Box>
   );

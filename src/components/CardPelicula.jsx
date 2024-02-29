@@ -10,6 +10,7 @@ function CardPelicula(props) {
 
     const cardOnClick = () => {
         navigate( props.path ,{state: {movie: props.movie}})
+        console.log("click en card:"+props.movie.id)
     }
 
     return (
