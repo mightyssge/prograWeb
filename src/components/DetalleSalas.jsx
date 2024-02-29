@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import { useNavigate } from "react-router-dom"
 import CardMedia from '@mui/material/CardMedia';
 
-const DetalleSalas = ({ name, img, address, formato, peliculas }) => {
+const DetalleSalas = ({ name, address, img, formato, peliculas }) => {
     const navigate = useNavigate();
     const [salaActual, setSalaActual] = useState({ name, address, img });
 
