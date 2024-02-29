@@ -39,7 +39,7 @@ function CardPelicula(props) {
 
                                 <Box sx={{ mt: '16px', display: 'flex', gap: '8px' }} spacing={8}>
                                     {
-                                        props.genres.map((label) => { 
+                                        props.genres && props.genres.map((label) => { 
                                             return <Chip label={label} variant="filled" color="default" style={{ padding: "4px", borderRadius: "100px" }} />
                                         }
                                         )}

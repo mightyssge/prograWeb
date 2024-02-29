@@ -3,32 +3,24 @@ import { Box, Grid, Typography } from '@mui/material';
 import CardPelicula from "./CardPelicula";
 
 const ContentPeliculasIndex = ({ searchText }) => {
-    
-    const [moviesData, setMoviesData]= useState([]);
-  
-    const getMovies = async()=>{
-      const response = await fetch(`http://localhost:8000/cines/ver-peliculas/?title=${searchText}`)
-      const  data= await response.json()
-      const listaPeliculasStr = JSON.stringify(data)
-      sessionStorage.setItem("PELICULAS", listaPeliculasStr)
-  
-  
-      setMoviesData(data)
-  
+
+    const [moviesData, setMoviesData] = useState([]);
+
+
+    const getMovies = async () => {
+        const response = await fetch(`http://localhost:8000/cines/ver-peliculas?title=${searchText}`)
+        const data = await response.json()
+        setMoviesData(data)
+        const listaPeliculasStr = JSON.stringify(data)
+        sessionStorage.setItem("PELICULAS", listaPeliculasStr)
     }
 
 
     useEffect(() => {
         getMovies()
-    
-        const peliculasStr = sessionStorage.getItem("PELICULAS")
-        if (peliculasStr == null) {
-          getMovies()
-        }else {
-            const peliculas = JSON.parse(peliculasStr)
-            setMoviesData(peliculas)
-        }
-    }, [])
+
+    }, [searchText])
+
 
     return (
         <Box flex={7} sx={{ p: 3 }}>
@@ -38,6 +30,7 @@ const ContentPeliculasIndex = ({ searchText }) => {
 
             <Box sx={{ mt: 3, padding: '19px 24px 0 24px' }}>
                 <Grid container spacing={2}>
+
                     {moviesData.map((movie) => (
                         <CardPelicula
                             key={movie.pk}
@@ -45,11 +38,11 @@ const ContentPeliculasIndex = ({ searchText }) => {
                             id={movie.pk}
                             title={movie.title}
                             year={movie.year}
-                            genres={movie.generos}
+                            genres={movie.genres}
                             thumbnail={movie.thumbnail}
                             path={movie.path}
                         />
-                    ))}
+                    ))} 
                 </Grid>
             </Box>
         </Box>
