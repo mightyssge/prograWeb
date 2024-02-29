@@ -69,7 +69,7 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
               {extract}
             </Typography>
             <Box sx={{ mt: '16px', display: 'flex', gap: '8px', margin: '5%' }}>
-              {genres.map((genre, index) => (
+            {genres && genres.map((genre, index) => (
                 <Chip
                   key={index}
                   label={genre}
@@ -88,7 +88,7 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, salas }) => {
         </Typography>
       </Grid>
       <Box sx={{ mt: 8, width: "55%", height: "100%" }}>
-        {salas && salas.map((sala, index) => (
+         {salas && salas.map((sala, index) => (
           <Grid key={index} style={{ marginBottom: "18%" }}>
             <Grid item md={4}>
               <Container style={{ width: "100%", height: "100%" }}>

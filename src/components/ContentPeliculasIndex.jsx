@@ -4,10 +4,13 @@ import CardPelicula from "./CardPelicula";
 
 const ContentPeliculasIndex = ({ searchText }) => {
     
+    const [filteredMovies, setFilteredMovies] = useState([]);
+
+    const[filterText, setFilterText] = useState("");
     const [moviesData, setMoviesData]= useState([]);
   
     const getMovies = async()=>{
-      const response = await fetch(`http://localhost:8000/cines/ver-peliculas/?title=${searchText}`)
+      const response = await fetch(`http://localhost:8000/cines/ver-peliculas/?title=${filterText}`)
       const  data= await response.json()
       const listaPeliculasStr = JSON.stringify(data)
       sessionStorage.setItem("PELICULAS", listaPeliculasStr)
@@ -17,6 +20,8 @@ const ContentPeliculasIndex = ({ searchText }) => {
   
     }
 
+
+ 
 
     useEffect(() => {
         getMovies()
@@ -38,16 +43,16 @@ const ContentPeliculasIndex = ({ searchText }) => {
 
             <Box sx={{ mt: 3, padding: '19px 24px 0 24px' }}>
                 <Grid container spacing={2}>
-                    {moviesData.map((movie) => (
+                    {filteredMovies.map((movie) => (
                         <CardPelicula
                             key={movie.pk}
                             movie={movie}
                             id={movie.pk}
-                            title={movie.title}
-                            year={movie.year}
-                            genres={movie.generos}
-                            thumbnail={movie.thumbnail}
-                            path={movie.path}
+                            title={movie.fields.title}
+                            year={movie.fields.year}
+                            genres={movie.fields.generos}
+                            thumbnail={movie.fields.thumbnail}
+                            path={movie.fields.path}
                         />
                     ))}
                 </Grid>

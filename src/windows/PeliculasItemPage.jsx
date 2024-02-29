@@ -7,8 +7,6 @@ import ContentPeliculasItem from '../components/ContentPeliculasItem.jsx'
 
 function PeliculasItemPage() {
 
-  
-
   const navigate = useNavigate();
 
   // Verifica si el usuario está autenticado al cargar la página de películas
