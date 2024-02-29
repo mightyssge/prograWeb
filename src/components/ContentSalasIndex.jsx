@@ -41,7 +41,7 @@ const ContentSalasIndex = ({ searchText }) => {
                         salasData.map((sala) => {
                             return (
                                 <CardSala
-                                    sala={sala.pk}
+                                    sala={sala}
                                     name={sala.nombre}
                                     address={sala.direccion}
                                     //city={sala.city}

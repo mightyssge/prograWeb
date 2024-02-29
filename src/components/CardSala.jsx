@@ -15,8 +15,9 @@ function CardSala(props) {
 
     const cardOnClick = () => {
         
-        sessionStorage.setItem('salaNombre', props.name); 
+        
         navigate(props.path, { state: { sala: props.sala } });
+        console.log("click en card:"+props.sala.id)
     }
     
     return (

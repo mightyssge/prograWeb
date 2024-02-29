@@ -1,28 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
+import {  Box,Grid, Card } from '@mui/material';
+import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import DetalleSalas from './DetalleSalas';
 
 const ContentSalaItem = () => {
-  const [salas, setSala] = useState(null);
+  const [salaEspecifica, setSalaEspecifica] = useState(null);
+  const [funcionesData, setFuncionesData] = useState([])
   const { path } = useParams();
+  const location = useLocation();
+
+
+  const obtenerFunciones = async() => {
+    const response = await fetch(`http://localhost:8000/cines/ver-funciones-sala?idsala=${location.state.sala.id}`);
+    const data = await response.json();
+    setFuncionesData(data);
+    console.log("hola"+data)
+  
+  }
+
 
   useEffect(() => {
-    console.log("Valor de path:", path);
-    const obtenerSalas = async () => {
-      try {
-        const response = await fetch(`http://localhost:8000/cines/ver-salas?path=${path}`);
-        const data = await response.json();
-        console.log(data);
-        setSala(data);
-      } catch (error) {
-        console.error("Error obteniendo la película", error);
-      }
-    };
 
-    obtenerSalas();
-  }, [path]);
+    console.log("pk:"+location.state.sala.pk)
+    obtenerFunciones();
+    setSalaEspecifica(location.state.sala)
+  }, []);
 
   return (
     <Box flex={2}>
@@ -30,15 +34,18 @@ const ContentSalaItem = () => {
         Salas
       </Typography>
 
-      {salas && (
+      {salaEspecifica && (
         <DetalleSalas
-          name={salas.nombre}
-          address={salas.direccion}
-          img={salas.imagen}
-          formato={salas.formato}
+          name={salaEspecifica.nombre}
+          address={salaEspecifica.direccion}
+          img={salaEspecifica.imagen}
+          formato={salaEspecifica.formato}
+          path={salaEspecifica.path}
+          funciones = {funcionesData}
         />
       )}
     </Box>
+    
   );
 };
 
