@@ -50,6 +50,9 @@ const obtenerFunciones = async() => {
           genres={peliculaEspecifica.genres}
           path={peliculaEspecifica.path}
           funciones = {funcionesData}
+          actores={peliculaEspecifica.cast}
+
+
           /* salas={peliculaEspecifica.salas.map(sala => {
             const salaInfo = salasData.find(s => s.name === sala.sala);
             return { ...sala, ...salaInfo };

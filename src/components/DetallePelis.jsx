@@ -3,10 +3,31 @@ import { Typography, Chip, Container, Box, Grid, Card, Avatar ,Button } from '@m
 import { useNavigate } from 'react-router-dom';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
-const DetallePelis = ({ title, year, thumbnail, extract, genres ,funciones}) => {
+const DetallePelis = ({ title, year, thumbnail, extract, genres, funciones, actores }) => {
   const navigate = useNavigate();
-  const [peliculaActual, setPeliculaActual] = useState({ title, year, thumbnail });
+  const [peliculaActual, setPeliculaActual] = useState({ title, year, thumbnail});
+
+  
   console.log("pelicula actual"+peliculaActual)
+
+  const handleClick = (  horario, sala) => {
+  
+   
+  
+    navigate('/reserva', {
+      state: {
+        salanombre: sala,
+        ventana: horario,
+        titulopelicula: title,
+        thumbnail:thumbnail,
+      },
+    });
+  };
+
+ 
+
+
+  
 
   /* const handleClick = (index, horarioIndex) => {
     const salaSeleccionada = salas[index];
@@ -78,6 +99,21 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres ,funciones}) => 
                 />
               ))}
             </Box>
+
+            <Box sx={{ mt: '10px', display: 'flex', flexWrap: 'wrap', gap: '8px', margin: '5%', ml: '10px', pb: '10px' }}>
+    {actores.map((actor, index) => (
+        <Chip
+            key={index}
+            label={actor}
+            variant="outlined"
+            color="secondary"
+            style={{ margin: '4px', borderRadius: '100px' }}
+        />
+    ))}
+</Box>
+
+
+
           </Card>
         </Grid>
       </Grid>
@@ -87,10 +123,10 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres ,funciones}) => 
         </Typography>
       </Grid>
       <Box sx={{ mt: 8, width: "55%", height: "100%" }}>
-        {
-          funciones && funciones.map((funcion, index) => (
+        {funciones &&
+          funciones.map((funcion, index) => (
             <Grid key={index} style={{ marginBottom: "18%" }}>
-            <Grid item md={4}>
+              <Grid item md={4}>
               <Container style={{ width: "100%", height: "100%" }}>
                 <Container style={{ display: "flex", marginBottom: "4%" }}>
                   <Avatar variant='rounded'>
@@ -106,35 +142,45 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres ,funciones}) => 
                   {funcion.salaadress}
                 </Typography>
               </Container>
-              <Grid sx={{ display: "flex", ml: 4, mb: 5}}>
-                {funcion.ventanas.map((horario, horarioIndex) => ( 
-                  <Button  /* onClick={() => handleClick(index, horarioIndex)} */
-                    key={horarioIndex}
-                    sx={{
-                      marginTop: 2,
-                      height: '28px',
-                      border: '1px dashed #9747FF',
-                      borderRadius: '8px',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: 'rgba(151, 71, 255, 0.04)',
-                      marginLeft: '20px',
-                      padding: "4px, 24px, 4px, 24px"
-                    }}
-                    >
 
+                <Grid sx={{ display: "flex", ml: 4, mb: 5 }}>
+                  {funcion.ventanas.map((horario, horarioIndex) => (
+                    <Button
+                      key={horarioIndex}
+                      sx={{
+                        marginTop: 2,
+                        height: '28px',
+                        border: '1px dashed #9747FF',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: 'rgba(151, 71, 255, 0.04)',
+                        marginLeft: '20px',
+                        padding: "4px, 24px, 4px, 24px"
+                      }}
+                      onClick={() => {
+                        handleClick(horario, funcion.salanombre);
+                       /* navigate('/reserva', {
+                          state: {
+                            peliculaActual: {
+                              title,
+                              year,
+                              thumbnail,
+                            }
+                          }
+                        });*/
+                      }}
+                    >
                       <Typography variant="h5" style={{ fontSize: '12px', color: "rgba(151, 71, 255, 1)" }}>
                         {horario}
                       </Typography>
-
-                  </Button>
-                ))}
+                    </Button>
+                  ))}
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        ))}
-      
+          ))}
       </Box>
     </Box>
   );

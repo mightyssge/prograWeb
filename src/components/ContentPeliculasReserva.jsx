@@ -7,14 +7,16 @@ import { useLocation } from 'react-router-dom';
 
 const ContentPeliculasReserva = () => {
     const location = useLocation();
-    const { peliculaActual } = location.state || {};
+   // const { peliculaActual } = location.state || {};
 
     //const [username, setUsername] = useState('');
 
     useEffect(() => {
-        if (peliculaActual) {
-            console.log('Información de la película en Reserva:', peliculaActual);
-        }
+       // if (peliculaActual) {
+            // console.log('Información de la película en Reserva:', peliculaActual);
+            // console.log('Nombre de la sala:', peliculaActual.sala);
+            // console.log('Horarios:', peliculaActual.horarios);
+        //}
 
         const storedUsername = sessionStorage.getItem('user');
         if (storedUsername) {
@@ -30,7 +32,7 @@ const ContentPeliculasReserva = () => {
                 cantidad: prevData.cantidad || '',
             }));
         }
-    }, [peliculaActual]);
+    }, []);
 
     const [formData, setFormData] = useState({
         nombre: '',
@@ -118,7 +120,7 @@ const ContentPeliculasReserva = () => {
                     padding: '0px 24px 0px 24px'
                 }}>
 
-                    <CardReserva peliculaActual={peliculaActual} />
+                    <CardReserva titulo={location.state.titulopelicula} sala={location.state.salanombre} />
 
 
 
@@ -139,7 +141,7 @@ const ContentPeliculasReserva = () => {
                         }}>
                             <Box style={{ paddingTop: '20px', paddingRight: '0px', paddingLeft: '0px', paddingBottom: '20px', marginLeft: '-45px' }}>
                                 <Paper elevation={3} style={{ padding: '20px', boxShadow: '5px 5px 15px 0px rgba(0,0,0,0.1)' }}>
-                                    <CardFormularioAdentro peliculaActual={peliculaActual} />
+                                    <CardFormularioAdentro horario={location.state.ventana}/>
                                     <form onSubmit={handleSubmit}>
                                         <TextField
                                             label="Nombre"
@@ -219,7 +221,7 @@ const ContentPeliculasReserva = () => {
                             </Box>
                         </Grid>
                         <Grid item md={4}>
-                            <CardImageReserva peliculaActual={peliculaActual} />
+                            <CardImageReserva thumbnail={location.state.thumbnail} />
                         </Grid>
                     </Box>
                 </Box>

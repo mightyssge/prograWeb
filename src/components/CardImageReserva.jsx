@@ -1,5 +1,5 @@
 import { Box, Paper} from '@mui/material';
-const CardImageReserva=({ peliculaActual})=>{
+const CardImageReserva=({ thumbnail})=>{
     return <Box sx={{
         width: 'auto',
         height: 'auto',
@@ -13,7 +13,7 @@ const CardImageReserva=({ peliculaActual})=>{
             boxShadow: 'none', 
         }}>
             <img
-                src={peliculaActual.thumbnail}
+                src={thumbnail}
                 alt="Imagen"
                 style={{ maxWidth: '100%', height: 'auto' }}
             />
