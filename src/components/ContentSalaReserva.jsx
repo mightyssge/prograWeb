@@ -7,9 +7,7 @@ import {
     Icon,
     Paper,
     Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions
+    DialogTitle
 } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
@@ -20,15 +18,14 @@ const ContentSalaReserva = () => {
         codigo: '',
         cantidad: '',
     });
-
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [error, setError] = useState('');
     const [thumbnail, setThumbnail] = useState('');
 
-    const [modalOpen, setModalOpen] = useState(false); 
-
     useEffect(() => {
         const storedUserData = sessionStorage.getItem('user');
+        const storedSalaNombre = sessionStorage.getItem('salaNombre');
+        
         if (storedUserData) {
             const userData = JSON.parse(storedUserData);
             setFormData({
@@ -38,36 +35,36 @@ const ContentSalaReserva = () => {
                 cantidad: '',
             });
         }
+        
+        if (storedSalaNombre) {
+            fetchSalaData(storedSalaNombre);
+        }
+        
+        // Obtener el thumbnail del sessionStorage y establecerlo en el estado
+        const storedSalaData = sessionStorage.getItem('salaData');
+        if (storedSalaData) {
+            const salaData = JSON.parse(storedSalaData);
+            if (salaData.length > 0 && salaData[0].thumbnail) {
+                setThumbnail(salaData[0].thumbnail);
+            }
+        }
     }, []);
 
-    const peliculaInfo = sessionStorage.getItem('seleccionHorario');
-    const peliculaData = peliculaInfo ? JSON.parse(peliculaInfo) : null;
-
-    const lugar = sessionStorage.getItem('Lugar');
-
-    const horarioInfo = sessionStorage.getItem('seleccionHorario');
-    const horarioData = horarioInfo ? JSON.parse(horarioInfo) : null;
-
-    useEffect(() => {
-        const fetchThumbnail = async () => {
-            try {
-                const response = await fetch('/peliculas.json');
-                const peliculas = await response.json();
-
-                const selectedMovie = peliculas.find(movie => movie.title === peliculaData.pelicula);
-
-                if (selectedMovie) {
-                    setThumbnail(selectedMovie.thumbnail);
-                }
-            } catch (error) {
-                console.error('Error al obtener el thumbnail:', error);
-            }
-        };
-
-        if (peliculaData && peliculaData.pelicula) {
-            fetchThumbnail();
+    const fetchSalaData = async (salaNombre) => {
+        try {
+            const response = await fetch(`http://localhost:8000/cines/ver-peliculas?title=${salaNombre}`);
+            const data = await response.json();
+            
+            // Guardar los datos en el sessionStorage
+            sessionStorage.setItem('salaData', JSON.stringify(data));
+            
+            // Aquí puedes manejar la respuesta del fetch
+            console.log('Información de la sala:', data);
+        } catch (error) {
+            console.error('Error al obtener la información de la sala:', error);
+            setError('Error al obtener la información de la sala. Por favor, inténtalo de nuevo.');
         }
-    }, [peliculaData]);
+    };
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -75,37 +72,6 @@ const ContentSalaReserva = () => {
             ...prevData,
             [name]: value,
         }));
-    };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        if (Object.values(formData).some((value) => value.trim() === '')) {
-            setError('Por favor, complete todos los campos.');
-        } else {
-            try {
-                const response = await fetch("http://localhost:8000/cines/guardar_reserva/", {
-                    method: "post",
-                    body: JSON.stringify({
-                        nombre: formData.nombre,
-                        apellido: formData.apellido,
-                        codigo: formData.codigo,
-                        cantidad: formData.cantidad,
-                        pelicula: peliculaData ? peliculaData.pelicula : 'Nombre de la Película',
-                        horario: horarioData ? horarioData.horario : 'Horario',
-                    })
-                });
-                const data = await response.json();
-                
-                if (data.msg === "") {
-                    setShowConfirmation(true);
-                    setModalOpen(true);
-                }
-            } catch (error) {
-                console.error('Error al guardar la reserva:', error);
-                setError('Error al guardar la reserva. Por favor, inténtalo de nuevo.');
-            }
-        }
     };
 
     const handleCloseConfirmation = () => {
@@ -157,7 +123,7 @@ const ContentSalaReserva = () => {
                             height: 'auto',
 
                         }}>
-                            {peliculaData ? peliculaData.pelicula : 'Nombre de la Película'}
+                            {sessionStorage.getItem('salaNombre') || 'CINE'}
 
                         </Typography>
                         <Box sx={{
@@ -174,7 +140,7 @@ const ContentSalaReserva = () => {
                                 <LocationOnIcon />
                             </Icon>
                             <Typography color="#2196F3" variant="subtitle1" component="div" sx={{ marginLeft: '5px' }}>
-                                {lugar}
+                                {sessionStorage.getItem('salanombre') || 'SALA' }
                             </Typography>
                         </Box>
                     </Box>
@@ -197,9 +163,9 @@ const ContentSalaReserva = () => {
                                         Información de reserva
                                     </Typography>
                                     <Typography variant="h6" component="div" gutterBottom style={{ borderBottom: '1px solid rgb(224, 224, 224)' }}>
-                                        {horarioData ? horarioData.horario : 'Horario'}
+                                    {sessionStorage.getItem('ventana') || 'SALA' }
                                     </Typography>
-                                    <form onSubmit={handleSubmit}>
+                                    <form onSubmit={null}>
                                         <TextField
                                             label="Nombre"
                                             fullWidth
@@ -257,7 +223,6 @@ const ContentSalaReserva = () => {
                                             color="secondary"
                                             fullWidth
                                             style={{ backgroundColor: 'rgb(250, 117, 37)', color: 'white', padding: '15px', fontWeight: 'bold' }}
-
                                         >
                                             Reservar
                                         </Button>
@@ -290,7 +255,6 @@ const ContentSalaReserva = () => {
                                 />
                             </Paper>
                         </Box>
-
                     </Box>
                 </Box>
             </Box>
@@ -309,7 +273,6 @@ const ContentSalaReserva = () => {
                     }}>
                     Reserva confirmada
                 </DialogTitle>
-                
             </Dialog>
         </Box>
     );

@@ -3,7 +3,7 @@ import React from 'react';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import {Typography, Box, Icon } from '@mui/material';
 
-const CardReserva = ({ peliculaActual}) => {
+const CardReserva = ({ titulo,sala}) => {
     return (
         <Box sx={{
             width: 'auto',
@@ -14,7 +14,7 @@ const CardReserva = ({ peliculaActual}) => {
                 width: 'auto',
                 height: 'auto',
             }}>
-                {peliculaActual.title}
+                {titulo}
             </Typography>
             <Box sx={{
                 display: 'flex',
@@ -31,7 +31,7 @@ const CardReserva = ({ peliculaActual}) => {
                     <LocationOnIcon />
                 </Icon>
                 <Typography color="#2196F3" variant="subtitle1" component="div" sx={{ marginLeft: '5px' }}>
-                    {peliculaActual.sala}
+                    {sala}
                 </Typography>
             </Box>
 
