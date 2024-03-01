@@ -1,20 +1,7 @@
 import React, { useState, useEffect } from 'react';
-
-import {
-    Button,
-    TextField,
-    Typography,
-    Box,
-    Icon,
-    Paper,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions
-} from '@mui/material';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Button, TextField, Typography, Box, Paper, Dialog, DialogTitle, Grid, DialogContent, DialogActions, Icon } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-
-
 
 const ContentSalaReserva = () => {
     const [formData, setFormData] = useState({
@@ -23,53 +10,103 @@ const ContentSalaReserva = () => {
         codigo: '',
         cantidad: '',
     });
-
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [error, setError] = useState('');
     const [thumbnail, setThumbnail] = useState('');
-
+    const navigate = useNavigate();
+    const redirectToPeliculasIndex = () => {
+        navigate('/peliculasindex');
+    };
     useEffect(() => {
-        const storedUserData = sessionStorage.getItem('user');
-        if (storedUserData) {
-            const userData = JSON.parse(storedUserData);
-            setFormData({
-                nombre: userData.nombre || '',
-                apellido: userData.apellido || '',
-                codigo: userData.correo.substring(0, userData.correo.indexOf("@")) || '',
-                cantidad: '',
-            });
-        }
-    }, []);
+        const loadData = async () => {
+            const storedUserData = sessionStorage.getItem('user');
+            const storedSalaNombre = sessionStorage.getItem('salaNombre');
 
-    const peliculaInfo = sessionStorage.getItem('seleccionHorario');
-    const peliculaData = peliculaInfo ? JSON.parse(peliculaInfo) : null;
-
-    const lugar = sessionStorage.getItem('Lugar')
-
-    const horarioInfo = sessionStorage.getItem('seleccionHorario');
-    const horarioData = horarioInfo ? JSON.parse(horarioInfo) : null;
-
-    useEffect(() => {
-        const fetchThumbnail = async () => {
-            try {
-                const response = await fetch('/peliculas.json');
-                const peliculas = await response.json();
-
-                const selectedMovie = peliculas.find(movie => movie.title === peliculaData.pelicula);
-
-                if (selectedMovie) {
-                    setThumbnail(selectedMovie.thumbnail);
+            if (storedUserData) {
+                const userData = JSON.parse(storedUserData);
+                let codigo = userData.correo || ''; // Inicializamos con el valor completo del correo
+            
+                // Si el correo tiene más de 8 caracteres, truncamos a los primeros 8
+                if (codigo.length > 8) {
+                    codigo = codigo.slice(0, 8);
                 }
-            } catch (error) {
-                console.error('Error al obtener el thumbnail:', error);
+            
+                setFormData({
+                    nombre: userData.nombre || '',
+                    apellido: userData.apellidos || '',
+                    codigo: codigo, // Usamos el valor modificado
+                    cantidad: '',
+                });
+            }
+            
+
+            if (storedSalaNombre) {
+                await fetchSalaData(storedSalaNombre);
+            }
+
+            const storedSalaData = sessionStorage.getItem('salaData');
+            if (storedSalaData) {
+                const salaData = JSON.parse(storedSalaData);
+                if (salaData.length > 0 && salaData[0].thumbnail) {
+                    setThumbnail(salaData[0].thumbnail);
+                }
             }
         };
 
-        if (peliculaData && peliculaData.pelicula) {
-            fetchThumbnail();
-        }
-    }, [peliculaData]);
+        const timer = setTimeout(loadData, 1);
 
+        return () => clearTimeout(timer);
+    }, []);
+
+    const fetchSalaData = async (salaNombre) => {
+        try {
+            const response = await fetch(`http://localhost:8000/cines/ver-peliculas?title=${salaNombre}`);
+            const data = await response.json();
+
+            sessionStorage.setItem('salaData', JSON.stringify(data));
+        } catch (error) {
+            console.error('Error al obtener la información de la sala:', error);
+            setError('Error al obtener la información de la sala. Por favor, inténtalo de nuevo.');
+        }
+    };
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        if (Object.values(formData).some((value) => value.trim() === '')) {
+            setError('Por favor, complete todos los campos.');
+        } else if (formData.cantidad <= 0) {
+            setError('La cantidad debe ser mayor a 0.');
+        } else if (/\d/.test(formData.nombre)) {
+            setError('Los nombres no pueden contener números.');
+        } else if (/\d/.test(formData.apellido)) {
+            setError('Los apellidos no pueden contener números');
+        } else {
+            try {
+                const response = await fetch(`http://localhost:8000/cines/createreserva`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ventana: sessionStorage.getItem('idVentana'),
+                        usuario: sessionStorage.getItem('id'),
+                        cantidad: formData.cantidad,
+                    }),
+                });
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log('Reserva creada:', responseData);
+                    setShowConfirmation(true);
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.msg || 'Error al crear la reserva.');
+                }
+            } catch (error) {
+                console.error('Error al realizar la solicitud:', error);
+                setError('Error al realizar la solicitud.');
+            }
+        }
+    };
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData((prevData) => ({
@@ -78,34 +115,11 @@ const ContentSalaReserva = () => {
         }));
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-
-        if (Object.values(formData).some((value) => value.trim() === '')) {
-            setError('Por favor, complete todos los campos.');
-        } 
-        else if (formData.cantidad <= 0) {
-            setError('La cantidad debe ser mayor a 0.');
-        }
-        
-        else if (/\d/.test(formData.nombre)) {
-            setError('Los nombres no pueden contener números.');
-        }
-
-        else if(/\d/.test(formData.apellido)){
-            setError('Los apellidos no pueden contener números')
-        }
-    
-        else {
-            console.log('Datos de reserva:', formData);
-            setShowConfirmation(true);
-        }
-    };
-
     const handleCloseConfirmation = () => {
         setShowConfirmation(false);
         setError('');
-    };
+        navigate('/salas'); 
+    };  
 
     return (
         <Box flex={19} sx={{
@@ -151,7 +165,7 @@ const ContentSalaReserva = () => {
                             height: 'auto',
 
                         }}>
-                            {peliculaData ? peliculaData.pelicula : 'Nombre de la Película'}
+                            {sessionStorage.getItem('salaNombre') || 'CINE'}
 
                         </Typography>
                         <Box sx={{
@@ -168,7 +182,7 @@ const ContentSalaReserva = () => {
                                 <LocationOnIcon />
                             </Icon>
                             <Typography color="#2196F3" variant="subtitle1" component="div" sx={{ marginLeft: '5px' }}>
-                                {lugar}
+                                {sessionStorage.getItem('salanombre') || 'SALA' }
                             </Typography>
                         </Box>
                     </Box>
@@ -191,7 +205,7 @@ const ContentSalaReserva = () => {
                                         Información de reserva
                                     </Typography>
                                     <Typography variant="h6" component="div" gutterBottom style={{ borderBottom: '1px solid rgb(224, 224, 224)' }}>
-                                        {horarioData ? horarioData.horario : 'Horario'}
+                                    {sessionStorage.getItem('ventana') || 'SALA' }
                                     </Typography>
                                     <form onSubmit={handleSubmit}>
                                         <TextField
@@ -227,10 +241,8 @@ const ContentSalaReserva = () => {
                                             onChange={handleChange}
                                             InputProps={{
                                                 placeholder: "Código",
-                                                style: { color: 'black' }
-                                                
+                                                style: { color: 'black' },
                                             }}
-                                            type="number"
                                         />
                                         <TextField
                                             label="Cantidad"
@@ -253,7 +265,6 @@ const ContentSalaReserva = () => {
                                             color="secondary"
                                             fullWidth
                                             style={{ backgroundColor: 'rgb(250, 117, 37)', color: 'white', padding: '15px', fontWeight: 'bold' }}
-
                                         >
                                             Reservar
                                         </Button>
@@ -286,7 +297,6 @@ const ContentSalaReserva = () => {
                                 />
                             </Paper>
                         </Box>
-
                     </Box>
                 </Box>
             </Box>

@@ -6,23 +6,45 @@ import { useEffect } from "react";
 import CardSala from "./CardSala";
 
 
-const ContentSalasIndex = ({searchText}) => {
-    const [filteredSalas, setFilteredSalas] = useState([])
+const ContentSalasIndex = ({ searchText }) => {
+
     const [salasData, setSalasData] = useState([])
+    const [nombre, setNombre] = useState('');
+    const [apellidos, setApellidos] = useState('');
+
+    useEffect(() => {
+        const storedUserData = sessionStorage.getItem('user');
+        if (storedUserData) {
+            const userData = JSON.parse(storedUserData);
+            const { nombre, apellidos } = userData;
+            setNombre(nombre);
+            setApellidos(apellidos);
+            fetchUserID(nombre, apellidos);
+        }
+        obtenerSalas();
+    }, [searchText]);
 
     const obtenerSalas = async () => {
-        const response = await fetch("/salas.json")
+        const response = await fetch(`http://localhost:8000/cines/ver-salas?path=${searchText}`)
         const data = await response.json()
         setSalasData(data)
+        const listaSalasStr = JSON.stringify(data)
+        sessionStorage.setItem("SALAS", listaSalasStr)
     }
-    useEffect(() => {
-        obtenerSalas()
-    }, [])
-
-    useEffect(() => {
-        const filteredSalas = salasData.filter((sala) => sala.name.toLowerCase().includes(searchText.toLowerCase()))
-        setFilteredSalas(filteredSalas)
-    }, [salasData, searchText])
+    
+    const fetchUserID = async (nombre, apellidos) => {
+        try {
+            const response = await fetch(`http://localhost:8000/cines/ver-usuarioid?nombre=${nombre}&apellido=${apellidos}`);
+            if (!response.ok) {
+                throw new Error('Error al procesar la solicitud');
+            }
+            const responseData = await response.json();
+            console.log('ID del usuario:', responseData.id);
+            sessionStorage.setItem('id', responseData.id);
+        } catch (error) {
+            console.error('Error al obtener el ID del usuario:', error);
+        }
+    };
 
     return (
         <Box flex={7} sx={{ p: 3 }} >
@@ -32,28 +54,28 @@ const ContentSalasIndex = ({searchText}) => {
             </Typography>
 
 
-            <Box  sx={{ mt: 3, p: 2}} >
+            <Box sx={{ mt: 3, p: 2 }} >
 
-                <Grid container spacing={2} > 
-                {
-                    filteredSalas.map((e)=>{
-                        return (
-                        <CardSala
-                            sala={e}
-                            name={e.name}
-                            address={e.address}
-                            city={e.city}
-                            path={e.path}
-                            formats={e.formats}
-                            img={e.img}
-                        />)
-                    })
-                }
-                 
+                <Grid container spacing={2} >
+                    {
+                        salasData.map((sala) => {
+                            return (
+                                <CardSala
+                                    sala={sala}
+                                    name={sala.nombre}
+                                    address={sala.direccion}
+                                    city={sala.city}
+                                    path={sala.path}
+                                    formato={sala.formato}
+                                    img={sala.imagen}
+                                />)
+                        })
+                    }
 
-                    
 
-                    
+
+
+
                 </Grid>
             </Box>
         </Box>

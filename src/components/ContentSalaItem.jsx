@@ -1,189 +1,54 @@
-import React, { useState } from 'react';
-import { Typography, Chip, Container, Box, Grid, Card, Avatar ,Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import React, { useState, useEffect } from 'react';
+import {  Box,Grid, Card } from '@mui/material';
+import Chip from '@mui/material/Chip';
+import Typography from '@mui/material/Typography';
+import { useParams, useLocation } from 'react-router-dom';
+import DetalleSalas from './DetalleSalas';
 
-const DetallePelis = ({ title, year, thumbnail, extract, genres, funciones, actores }) => {
-  const navigate = useNavigate();
-  const [peliculaActual, setPeliculaActual] = useState({ title, year, thumbnail});
-
-  
-  console.log("pelicula actual"+peliculaActual)
-
-  const handleClick = (  horario, sala) => {
-  
-   
-  
-    navigate('/reserva', {
-      state: {
-        salanombre: sala,
-        ventana: horario,
-        titulopelicula: title,
-        thumbnail:thumbnail,
-      },
-    });
-  };
-
- 
+const ContentSalaItem = () => {
+  const [salaEspecifica, setSalaEspecifica] = useState(null);
+  const [funcionesData, setFuncionesData] = useState([])
+  const { path } = useParams();
+  const location = useLocation();
 
 
+  const obtenerFunciones = async() => {
+    const response = await fetch(`http://localhost:8000/cines/ver-funciones-sala?idsala=${location.state.sala.id}`);
+    const data = await response.json();
+    setFuncionesData(data);
+    console.log("hola"+data)
+    console.log("Funciones" + funcionesData.id)
   
+  }
 
-  /* const handleClick = (index, horarioIndex) => {
-    const salaSeleccionada = salas[index];
-    const horarioSeleccionado = salaSeleccionada.horarios[horarioIndex];
-  
-    setPeliculaActual({
-      title,
-      year,
-      thumbnail,
-      horarioSeleccionado,
-      sala: salaSeleccionada.sala, // Agregamos el nombre de la sala al estado
-    });
-  
-    console.log(`Información de la película: ${title}, Año: ${year}, Sala: ${salaSeleccionada.sala}, Horario seleccionado: ${horarioSeleccionado}, Img: ${thumbnail}`);
-  
-    navigate('/reserva', { state: { peliculaActual: { title, year, thumbnail, horarioSeleccionado, sala: salaSeleccionada.sala } } });
-  }; */
+
+  useEffect(() => {
+
+    console.log("pk:"+location.state.sala.pk)
+    obtenerFunciones();
+    setSalaEspecifica(location.state.sala)
+    console.log("Funciones2" + funcionesData.id)
+  }, []);
 
   return (
-    <Box sx={{ padding: 4, mt: 5 }}>
-      <Grid item md={4} sx={{ mb: 1 }}>
-        <Typography variant="h4" sx={{ fontSize: '40px', fontFamily: 'Roboto' }}>
-          {title}
-        </Typography>
-        <Grid sx={{ display: "flex", my: 3 }}>
-            <CalendarMonthIcon color="action" sx={{ marginRight: "15px" }} ></CalendarMonthIcon>
-            <Typography variant="subtitle2" color="#2196F3" fontWeight="600" sx={{}}>
-            {year}
-            </Typography>
-          </Grid>
-        <Grid sx={{ display: 'flex' }}>
-        </Grid>
-      </Grid>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={4}>
-          <Card sx={{ height: '100%' }}>
-            <img
-              src={thumbnail}
-              alt={title}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={8} sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Card sx={{ height: '100%', width: '100%', pr: 2 }}>
-            <header typeof="title">
-              <Typography variant="h5" style={{ margin: '8%' }}>
-                Sinopsis
-              </Typography>
-            </header>
-            <Typography
-              variant="body1"
-              style={{
-                margin: '8%',
-                fontSize: '16px',
-                fontFamily: 'Roboto',
-              }}
-            >
-              {extract}
-            </Typography>
-            <Box sx={{ mt: '16px', display: 'flex', gap: '8px', margin: '5%' }}>
-              {genres.map((genre, index) => (
-                <Chip
-                  key={index}
-                  label={genre}
-                  variant="filled"
-                  color="default"
-                  style={{ padding: '4px', borderRadius: '100px' }}
-                />
-              ))}
-            </Box>
+    <Box flex={2}>
+      <Typography variant="h4" component="div" sx={{ paddingTop: '20px', paddingBottom: '16px', borderBottom: '1px solid rgb(224, 224, 224)' }}>
+        Salas
+      </Typography>
 
-            <Box sx={{ mt: '10px', display: 'flex', flexWrap: 'wrap', gap: '8px', margin: '5%', ml: '10px', pb: '10px' }}>
-    {actores.map((actor, index) => (
-        <Chip
-            key={index}
-            label={actor}
-            variant="outlined"
-            color="secondary"
-            style={{ margin: '4px', borderRadius: '100px' }}
+      {salaEspecifica && (
+        <DetalleSalas
+          name={salaEspecifica.nombre}
+          address={salaEspecifica.direccion}
+          img={salaEspecifica.imagen}
+          formato={salaEspecifica.formato}
+          path={salaEspecifica.path}
+          funciones = {funcionesData}
         />
-    ))}
-</Box>
-
-
-
-          </Card>
-        </Grid>
-      </Grid>
-      <Grid style={{ paddingTop: "2%", width: "100%" }} item md={4}>
-        <Typography variant="h2" style={{ fontSize: "45px", fontFamily: "Roboto" }} sx={{mt:3}}>
-          Salas disponibles
-        </Typography>
-      </Grid>
-      <Box sx={{ mt: 8, width: "55%", height: "100%" }}>
-        {funciones &&
-          funciones.map((funcion, index) => (
-            <Grid key={index} style={{ marginBottom: "18%" }}>
-              <Grid item md={4}>
-              <Container style={{ width: "100%", height: "100%" }}>
-                <Container style={{ display: "flex", marginBottom: "4%" }}>
-                  <Avatar variant='rounded'>
-                    <Typography >
-                      {funcion.salasiglas}
-                    </Typography>
-                  </Avatar>
-                  <Typography variant='h6' style={{ marginLeft: "2%", marginTop: "5px", fontFamily: "Roboto" }}>
-                    <b>{funcion.salanombre}</b> 
-                  </Typography>
-                </Container>
-                <Typography variant='body1' style={{ marginLeft: "5%", fontFamily: "Roboto" }}>
-                  {funcion.salaadress}
-                </Typography>
-              </Container>
-
-                <Grid sx={{ display: "flex", ml: 4, mb: 5 }}>
-                  {funcion.ventanas.map((horario, horarioIndex) => (
-                    <Button
-                      key={horarioIndex}
-                      sx={{
-                        marginTop: 2,
-                        height: '28px',
-                        border: '1px dashed #9747FF',
-                        borderRadius: '8px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: 'rgba(151, 71, 255, 0.04)',
-                        marginLeft: '20px',
-                        padding: "4px, 24px, 4px, 24px"
-                      }}
-                      onClick={() => {
-                        handleClick(horario, funcion.salanombre);
-                       /* navigate('/reserva', {
-                          state: {
-                            peliculaActual: {
-                              title,
-                              year,
-                              thumbnail,
-                            }
-                          }
-                        });*/
-                      }}
-                    >
-                      <Typography variant="h5" style={{ fontSize: '12px', color: "rgba(151, 71, 255, 1)" }}>
-                        {horario}
-                      </Typography>
-                    </Button>
-                  ))}
-                </Grid>
-              </Grid>
-            </Grid>
-          ))}
-      </Box>
+      )}
     </Box>
+    
   );
 };
 
-export default DetallePelis;
+export default ContentSalaItem;
