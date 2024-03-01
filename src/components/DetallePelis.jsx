@@ -1,14 +1,55 @@
-import React, { useState } from 'react';
-import { Typography, Chip, Container, Box, Grid, Card, Avatar ,Button } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Typography, Chip, Container, Box, Grid, Card, Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import ReactPlayer from 'react-player/youtube';
 
 const DetallePelis = ({ title, year, thumbnail, extract, genres, funciones, actores }) => {
   const navigate = useNavigate();
   const [peliculaActual, setPeliculaActual] = useState({ title, year, thumbnail});
+  const [open, setOpen] = useState(false);
+  const [urlTrailer, setUrlTrailer] = useState('');
+  const [tomatometer, setTomatometer] = useState('--');
+  const [metacritic, setMetacritic] = useState('--');
+  const [imdb, setImdb] = useState('--');
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   
-  console.log("pelicula actual"+peliculaActual)
+  const getUrl = async () => {
+    const response = await fetch(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyBvaQScd9trsY8vff7Icu5MxxS3Xx4hdIc&type=video&part=snippet&maxResults=1&q=trailer%20${title}`);
+    const data = await response.json();
+    const id_trailer = data["items"][0]["id"]["videoId"];
+    setUrlTrailer(`https://www.youtube.com/watch?v=${id_trailer}`);
+
+  }
+
+  const getRatings = async () => {
+    const response = await fetch(`https://www.omdbapi.com/?apikey=cd062263&t=${title}`);
+    const data = await response.json();
+
+    for (let i = 0; i < data.Ratings.length; i++) {
+      if (data.Ratings[i].Source === "Rotten Tomatoes") {
+        setTomatometer(data.Ratings[i].Value);
+      }
+      else if (data.Ratings[i].Source === "Metacritic") {
+        setMetacritic(data.Ratings[i].Value);
+      }
+      else if (data.Ratings[i].Source === "Internet Movie Database") {
+        setImdb(data.Ratings[i].Value);
+      }
+    }}
+
+  useEffect(() => {
+    getRatings();
+    getUrl();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleClick = (  horario, sala) => {
   
@@ -24,27 +65,7 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, funciones, acto
     });
   };
 
- 
 
-
-  
-
-  /* const handleClick = (index, horarioIndex) => {
-    const salaSeleccionada = salas[index];
-    const horarioSeleccionado = salaSeleccionada.horarios[horarioIndex];
-  
-    setPeliculaActual({
-      title,
-      year,
-      thumbnail,
-      horarioSeleccionado,
-      sala: salaSeleccionada.sala, // Agregamos el nombre de la sala al estado
-    });
-  
-    console.log(`Información de la película: ${title}, Año: ${year}, Sala: ${salaSeleccionada.sala}, Horario seleccionado: ${horarioSeleccionado}, Img: ${thumbnail}`);
-  
-    navigate('/reserva', { state: { peliculaActual: { title, year, thumbnail, horarioSeleccionado, sala: salaSeleccionada.sala } } });
-  }; */
 
   return (
     <Box sx={{ padding: 4, mt: 5 }}>
@@ -101,7 +122,7 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, funciones, acto
             </Box>
 
             <Box sx={{ mt: '10px', display: 'flex', flexWrap: 'wrap', gap: '8px', margin: '5%', ml: '10px', pb: '10px' }}>
-    {actores.map((actor, index) => (
+            {actores.map((actor, index) => (
         <Chip
             key={index}
             label={actor}
@@ -111,6 +132,28 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, funciones, acto
         />
     ))}
 </Box>
+<Box sx={{ mt: '16px', display: 'flex', gap: '8px', margin: '5%' }}>
+              <Grid container spacing={1}>
+                <Grid item xs={4} textAlign={"center"}>
+                  <img src="https://www.rottentomatoes.com/assets/pizza-pie/images/icons/tomatometer/tomatometer-fresh.149b5e8adc3.svg" style={{ width: 50 }} alt='tomate' /> <br />
+                     {tomatometer} <br />
+                     TOMATOMETER
+                </Grid>
+                <Grid item xs={4} textAlign={"center"}>
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Metacritic_M.png" style={{ width: 50 }} alt='m'/> <br />
+                   {metacritic} <br />
+                   METACRITIC
+                </Grid>
+                <Grid item xs={4} textAlign={"center"}>
+                <img src="https://cdn1.iconfinder.com/data/icons/macster/70/.svg-17-512.png" style={{ width:50 }} alt='star' /> <br />
+                   {imdb} <br />
+                   IMDb
+                </Grid>
+              </Grid>
+            </Box>
+<Box sx={{ mt: '16px', display: 'flex', gap: '8px', margin: '5%' }}>
+              <Button onClick={handleClickOpen}>Ver Trailer</Button>
+            </Box>
 
 
 
@@ -182,7 +225,25 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, funciones, acto
             </Grid>
           ))}
       </Box>
+      <Dialog
+      open={open}
+      onClose={handleClose}
+      fullWidth
+      maxWidth="md"
+      >
+        <DialogTitle >
+          {`Mira el trailer de ${title}`}
+        </DialogTitle>
+        <DialogContent sx={{ textAlign: "center", display: "flex", justifyContent: "center" }}>
+          <ReactPlayer url={urlTrailer} controls />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cerrar</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
+
+
   );
 };
 
