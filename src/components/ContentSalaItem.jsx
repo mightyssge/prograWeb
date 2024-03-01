@@ -17,6 +17,7 @@ const ContentSalaItem = () => {
     const data = await response.json();
     setFuncionesData(data);
     console.log("hola"+data)
+    console.log("Funciones" + funcionesData.id)
   
   }
 
@@ -26,6 +27,7 @@ const ContentSalaItem = () => {
     console.log("pk:"+location.state.sala.pk)
     obtenerFunciones();
     setSalaEspecifica(location.state.sala)
+    console.log("Funciones2" + funcionesData.id)
   }, []);
 
   return (

@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {
-    Button,
-    TextField,
-    Typography,
-    Box,
-    Icon,
-    Paper,
-    Dialog,
-    DialogTitle
-} from '@mui/material';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Button, TextField, Typography, Box, Paper, Dialog, DialogTitle, Grid, DialogContent, DialogActions, Icon } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 const ContentSalaReserva = () => {
@@ -21,7 +13,10 @@ const ContentSalaReserva = () => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [error, setError] = useState('');
     const [thumbnail, setThumbnail] = useState('');
-
+    const navigate = useNavigate();
+    const redirectToPeliculasIndex = () => {
+        navigate('/peliculasindex');
+    };
     useEffect(() => {
         const loadData = async () => {
             const storedUserData = sessionStorage.getItem('user');
@@ -66,7 +61,44 @@ const ContentSalaReserva = () => {
             setError('Error al obtener la información de la sala. Por favor, inténtalo de nuevo.');
         }
     };
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
+        if (Object.values(formData).some((value) => value.trim() === '')) {
+            setError('Por favor, complete todos los campos.');
+        } else if (formData.cantidad <= 0) {
+            setError('La cantidad debe ser mayor a 0.');
+        } else if (/\d/.test(formData.nombre)) {
+            setError('Los nombres no pueden contener números.');
+        } else if (/\d/.test(formData.apellido)) {
+            setError('Los apellidos no pueden contener números');
+        } else {
+            try {
+                const response = await fetch(`http://localhost:8000/cines/createreserva`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ventana: sessionStorage.getItem('idVentana'),
+                        usuario: sessionStorage.getItem('id'),
+                        cantidad: formData.cantidad,
+                    }),
+                });
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log('Reserva creada:', responseData);
+                    setShowConfirmation(true);
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.msg || 'Error al crear la reserva.');
+                }
+            } catch (error) {
+                console.error('Error al realizar la solicitud:', error);
+                setError('Error al realizar la solicitud.');
+            }
+        }
+    };
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData((prevData) => ({
@@ -78,7 +110,8 @@ const ContentSalaReserva = () => {
     const handleCloseConfirmation = () => {
         setShowConfirmation(false);
         setError('');
-    };
+        navigate('/salas'); 
+    };  
 
     return (
         <Box flex={19} sx={{
@@ -166,7 +199,7 @@ const ContentSalaReserva = () => {
                                     <Typography variant="h6" component="div" gutterBottom style={{ borderBottom: '1px solid rgb(224, 224, 224)' }}>
                                     {sessionStorage.getItem('ventana') || 'SALA' }
                                     </Typography>
-                                    <form onSubmit={null}>
+                                    <form onSubmit={handleSubmit}>
                                         <TextField
                                             label="Nombre"
                                             fullWidth
@@ -274,6 +307,44 @@ const ContentSalaReserva = () => {
                     }}>
                     Reserva confirmada
                 </DialogTitle>
+                <DialogContent>
+                    <Box
+                        borderRadius="10px"
+                        border="1px dashed #ccc"
+                        padding="20px"
+                        sx={{
+                            background: 'linear-gradient(0deg, rgba(250, 117, 37, 0.04), rgba(250, 117, 37, 0.04))',
+                            color: '#FA7525',
+                            border: '1px dashed #FA7525',
+                        }}
+                    >
+                        <Typography variant="body1" sx={{
+                            paddingLeft: '25px',
+                        }}>
+                            {formData.nombre}
+                        </Typography>
+                        <Typography variant="body1" sx={{
+                            paddingLeft: '25px',
+                        }}>
+                            {formData.apellido}
+                        </Typography>
+                        <Typography variant="body1" sx={{
+                            paddingLeft: '25px',
+                        }}>
+                            {formData.codigo}
+                        </Typography>
+                        <Typography variant="body1" sx={{
+                            paddingLeft: '25px',
+                        }}>
+                            {formData.cantidad} pases
+                        </Typography>
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseConfirmation} color="primary">
+                        Entendido
+                    </Button>
+                </DialogActions>
             </Dialog>
         </Box>
     );

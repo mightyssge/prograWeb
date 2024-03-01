@@ -6,16 +6,18 @@ import { useNavigate } from 'react-router-dom';
 const DetalleSalas = ({ name, address, img, formato, funciones }) => {
     const navigate = useNavigate();
 
-    const handleClick = (horario, nombrePelicula) => {
-        console.log("Datos enviados:", { salanombre: name, ventana: horario,  nombrePelicula: nombrePelicula });
+    const handleClick = (horario, nombrePelicula, funcionid) => {
+        console.log("Datos enviados:", { salanombre: name, ventana: horario,  nombrePelicula: nombrePelicula, funcionid: funcionid });
         sessionStorage.setItem('salanombre', name);
         sessionStorage.setItem('ventana', horario);
         sessionStorage.setItem('salaNombre', nombrePelicula);
+        sessionStorage.setItem('idVentana', funcionid);
         navigate('/reserva2', {
             state: {
                 salanombre: name,
                 ventana: horario,
                 nombrePelicula: nombrePelicula,
+                funcionid: funcionid,
                 
             },
         });
@@ -93,7 +95,7 @@ const DetalleSalas = ({ name, address, img, formato, funciones }) => {
                                             funcion.ventanas.map((horario, horarioIndex) => (
                                                 <Button
                                                     key={horarioIndex}
-                                                    onClick={() => handleClick(horario, funcion.peliculanombre)} 
+                                                    onClick={() => handleClick(horario, funcion.peliculanombre, funcion.id)} 
                                                     sx={{
                                                         marginTop: 2,
                                                         height: '28px',
