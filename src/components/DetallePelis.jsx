@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
-import { Typography, Chip, Container, Box, Grid, Card, Avatar ,Button , Dialog , DialogActions , DialogContent , DialogContentText, DialogTitle} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Typography, Chip, Container, Box, Grid, Card, Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle  } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ReactPlayer from 'react-player/youtube';
 
-const DetallePelis = ({ title, year, thumbnail, extract, genres ,funciones}) => {
+const DetallePelis = ({ title, year, thumbnail, extract, genres, funciones }) => {
   const navigate = useNavigate();
   const [peliculaActual, setPeliculaActual] = useState({ title, year, thumbnail });
   const [open, setOpen] = useState(false);
+  const [urlTrailer, setUrlTrailer] = useState('');
+  const [tomatometer, setTomatometer] = useState('--');
+  const [metacritic, setMetacritic] = useState('--');
+  const [imdb, setImdb] = useState('--');
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -17,6 +21,36 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres ,funciones}) => 
     setOpen(false);
   };
 
+
+  const getUrl = async () => {
+    const response = await fetch(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyBvaQScd9trsY8vff7Icu5MxxS3Xx4hdIc&type=video&part=snippet&maxResults=1&q=trailer%20${title}`);
+    const data = await response.json();
+    const id_trailer = data["items"][0]["id"]["videoId"];
+    console.log(id_trailer);
+    setUrlTrailer(`https://www.youtube.com/watch?v=${id_trailer}`);
+
+  }
+
+  const getRatings = async () => {
+    const response = await fetch(`https://www.omdbapi.com/?apikey=cd062263&t=${title}`);
+    const data = await response.json();
+    
+    for (let i = 0; i < data.Ratings.length; i++) {
+      if (data.Ratings[i].Source === "Rotten Tomatoes") {
+        setTomatometer(data.Ratings[i].Value);
+      }
+      else if (data.Ratings[i].Source === "Metacritic") {
+        setMetacritic(data.Ratings[i].Value);
+      }
+      else if (data.Ratings[i].Source === "Internet Movie Database") {
+        setImdb(data.Ratings[i].Value);
+      }
+    }}
+
+  useEffect(() => {
+    getRatings();
+    getUrl();
+  }, []);
   /* const handleClick = (index, horarioIndex) => {
     const salaSeleccionada = salas[index];
     const horarioSeleccionado = salaSeleccionada.horarios[horarioIndex];
@@ -41,11 +75,11 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres ,funciones}) => 
           {title}
         </Typography>
         <Grid sx={{ display: "flex", my: 3 }}>
-            <CalendarMonthIcon color="action" sx={{ marginRight: "15px" }} ></CalendarMonthIcon>
-            <Typography variant="subtitle2" color="#2196F3" fontWeight="600" sx={{}}>
+          <CalendarMonthIcon color="action" sx={{ marginRight: "15px" }} ></CalendarMonthIcon>
+          <Typography variant="subtitle2" color="#2196F3" fontWeight="600" sx={{}}>
             {year}
-            </Typography>
-          </Grid>
+          </Typography>
+        </Grid>
         <Grid sx={{ display: 'flex' }}>
         </Grid>
       </Grid>
@@ -88,13 +122,32 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres ,funciones}) => 
               ))}
             </Box>
             <Box sx={{ mt: '16px', display: 'flex', gap: '8px', margin: '5%' }}>
+              <Grid container spacing={1}>
+                <Grid item xs={4} textAlign={"center"}>
+                  <img src="https://www.rottentomatoes.com/assets/pizza-pie/images/icons/tomatometer/tomatometer-fresh.149b5e8adc3.svg" style={{ width: 50 }} alt='tomate' /> <br />
+                     {tomatometer} <br />
+                     TOMATOMETER
+                </Grid>
+                <Grid item xs={4} textAlign={"center"}>
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Metacritic_M.png" style={{ width: 50 }} alt='m'/> <br />
+                   {metacritic} <br />
+                   METACRITIC
+                </Grid>
+                <Grid item xs={4} textAlign={"center"}>
+                <img src="https://cdn1.iconfinder.com/data/icons/macster/70/.svg-17-512.png" style={{ width:50 }} alt='star' /> <br />
+                   {imdb} <br />
+                   IMDb
+                </Grid>
+              </Grid>
+            </Box>
+            <Box sx={{ mt: '16px', display: 'flex', gap: '8px', margin: '5%' }}>
               <Button onClick={handleClickOpen}>Ver Trailer</Button>
             </Box>
           </Card>
         </Grid>
       </Grid>
       <Grid style={{ paddingTop: "2%", width: "100%" }} item md={4}>
-        <Typography variant="h2" style={{ fontSize: "45px", fontFamily: "Roboto" }} sx={{mt:3}}>
+        <Typography variant="h2" style={{ fontSize: "45px", fontFamily: "Roboto" }} sx={{ mt: 3 }}>
           Salas disponibles
         </Typography>
       </Grid>
@@ -102,64 +155,64 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres ,funciones}) => 
         {
           funciones && funciones.map((funcion, index) => (
             <Grid key={index} style={{ marginBottom: "18%" }}>
-            <Grid item md={4}>
-              <Container style={{ width: "100%", height: "100%" }}>
-                <Container style={{ display: "flex", marginBottom: "4%" }}>
-                  <Avatar variant='rounded'>
-                    <Typography >
-                      {funcion.salasiglas}
+              <Grid item md={4}>
+                <Container style={{ width: "100%", height: "100%" }}>
+                  <Container style={{ display: "flex", marginBottom: "4%" }}>
+                    <Avatar variant='rounded'>
+                      <Typography >
+                        {funcion.salasiglas}
+                      </Typography>
+                    </Avatar>
+                    <Typography variant='h6' style={{ marginLeft: "2%", marginTop: "5px", fontFamily: "Roboto" }}>
+                      <b>{funcion.salanombre}</b>
                     </Typography>
-                  </Avatar>
-                  <Typography variant='h6' style={{ marginLeft: "2%", marginTop: "5px", fontFamily: "Roboto" }}>
-                    <b>{funcion.salanombre}</b> 
+                  </Container>
+                  <Typography variant='body1' style={{ marginLeft: "5%", fontFamily: "Roboto" }}>
+                    {funcion.salaadress}
                   </Typography>
                 </Container>
-                <Typography variant='body1' style={{ marginLeft: "5%", fontFamily: "Roboto" }}>
-                  {funcion.salaadress}
-                </Typography>
-              </Container>
-              <Grid sx={{ display: "flex", ml: 4, mb: 5}}>
-                {funcion.ventanas.map((horario, horarioIndex) => ( 
-                  <Button  /* onClick={() => handleClick(index, horarioIndex)} */
-                    key={horarioIndex}
-                    sx={{
-                      marginTop: 2,
-                      height: '28px',
-                      border: '1px dashed #9747FF',
-                      borderRadius: '8px',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: 'rgba(151, 71, 255, 0.04)',
-                      marginLeft: '20px',
-                      padding: "4px, 24px, 4px, 24px"
-                    }}
+                <Grid sx={{ display: "flex", ml: 4, mb: 5 }}>
+                  {funcion.ventanas.map((horario, horarioIndex) => (
+                    <Button  /* onClick={() => handleClick(index, horarioIndex)} */
+                      key={horarioIndex}
+                      sx={{
+                        marginTop: 2,
+                        height: '28px',
+                        border: '1px dashed #9747FF',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: 'rgba(151, 71, 255, 0.04)',
+                        marginLeft: '20px',
+                        padding: "4px, 24px, 4px, 24px"
+                      }}
                     >
 
                       <Typography variant="h5" style={{ fontSize: '12px', color: "rgba(151, 71, 255, 1)" }}>
                         {horario}
                       </Typography>
 
-                  </Button>
-                ))}
+                    </Button>
+                  ))}
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        ))}
-      
+          ))}
+
       </Box>
 
       <Dialog
-      open={open}
-      onClose={handleClose}
-      fullWidth
-      maxWidth="md"
+        open={open}
+        onClose={handleClose}
+        fullWidth
+        maxWidth="md"
       >
         <DialogTitle >
           {`Mira el trailer de ${title}`}
         </DialogTitle>
         <DialogContent sx={{ textAlign: "center", display: "flex", justifyContent: "center" }}>
-          <ReactPlayer url='https://www.youtube.com/watch?v=LXb3EKWsInQ' controls />
+          <ReactPlayer url={urlTrailer} controls />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cerrar</Button>
@@ -173,7 +226,7 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres ,funciones}) => 
 
     </Box>
 
-    
+
   );
 };
 
