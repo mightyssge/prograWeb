@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
-import { Typography, Chip, Container, Box, Grid, Card, Avatar ,Button } from '@mui/material';
+import { Typography, Chip, Container, Box, Grid, Card, Avatar ,Button , Dialog , DialogActions , DialogContent , DialogContentText, DialogTitle} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import ReactPlayer from 'react-player/youtube';
 
 const DetallePelis = ({ title, year, thumbnail, extract, genres ,funciones}) => {
   const navigate = useNavigate();
   const [peliculaActual, setPeliculaActual] = useState({ title, year, thumbnail });
-  console.log("pelicula actual"+peliculaActual)
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   /* const handleClick = (index, horarioIndex) => {
     const salaSeleccionada = salas[index];
@@ -78,6 +87,9 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres ,funciones}) => 
                 />
               ))}
             </Box>
+            <Box sx={{ mt: '16px', display: 'flex', gap: '8px', margin: '5%' }}>
+              <Button onClick={handleClickOpen}>Ver Trailer</Button>
+            </Box>
           </Card>
         </Grid>
       </Grid>
@@ -136,7 +148,32 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres ,funciones}) => 
         ))}
       
       </Box>
+
+      <Dialog
+      open={open}
+      onClose={handleClose}
+      fullWidth
+      maxWidth="md"
+      >
+        <DialogTitle >
+          {`Mira el trailer de ${title}`}
+        </DialogTitle>
+        <DialogContent sx={{ textAlign: "center", display: "flex", justifyContent: "center" }}>
+          <ReactPlayer url='https://www.youtube.com/watch?v=LXb3EKWsInQ' controls />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cerrar</Button>
+        </DialogActions>
+      </Dialog>
+
+
+
+
+
+
     </Box>
+
+    
   );
 };
 
