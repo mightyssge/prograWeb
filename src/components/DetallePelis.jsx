@@ -51,16 +51,16 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, funciones, acto
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleClick = (  horario, sala) => {
-  
-   
-  
+  const handleClick = (  horario, sala, funcionid) => {
+
+    sessionStorage.setItem('idVentana', funcionid);
     navigate('/reserva', {
       state: {
         salanombre: sala,
         ventana: horario,
         titulopelicula: title,
         thumbnail:thumbnail,
+        funcionid: funcionid
       },
     });
   };
@@ -203,16 +203,8 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, funciones, acto
                         padding: "4px, 24px, 4px, 24px"
                       }}
                       onClick={() => {
-                        handleClick(horario, funcion.salanombre);
-                       /* navigate('/reserva', {
-                          state: {
-                            peliculaActual: {
-                              title,
-                              year,
-                              thumbnail,
-                            }
-                          }
-                        });*/
+                        handleClick(horario, funcion.salanombre, funcion.id);
+                       
                       }}
                     >
                       <Typography variant="h5" style={{ fontSize: '12px', color: "rgba(151, 71, 255, 1)" }}>
