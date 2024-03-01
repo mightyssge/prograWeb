@@ -23,43 +23,44 @@ const ContentSalaReserva = () => {
     const [thumbnail, setThumbnail] = useState('');
 
     useEffect(() => {
-        const storedUserData = sessionStorage.getItem('user');
-        const storedSalaNombre = sessionStorage.getItem('salaNombre');
-        
-        if (storedUserData) {
-            const userData = JSON.parse(storedUserData);
-            setFormData({
-                nombre: userData.nombre || '',
-                apellido: userData.apellidos || '',
-                codigo: userData.correo || '',
-                cantidad: '',
-            });
-        }
-        
-        if (storedSalaNombre) {
-            fetchSalaData(storedSalaNombre);
-        }
-        
-        // Obtener el thumbnail del sessionStorage y establecerlo en el estado
-        const storedSalaData = sessionStorage.getItem('salaData');
-        if (storedSalaData) {
-            const salaData = JSON.parse(storedSalaData);
-            if (salaData.length > 0 && salaData[0].thumbnail) {
-                setThumbnail(salaData[0].thumbnail);
+        const loadData = async () => {
+            const storedUserData = sessionStorage.getItem('user');
+            const storedSalaNombre = sessionStorage.getItem('salaNombre');
+
+            if (storedUserData) {
+                const userData = JSON.parse(storedUserData);
+                setFormData({
+                    nombre: userData.nombre || '',
+                    apellido: userData.apellidos || '',
+                    codigo: userData.correo || '',
+                    cantidad: '',
+                });
             }
-        }
+
+            if (storedSalaNombre) {
+                await fetchSalaData(storedSalaNombre);
+            }
+
+            const storedSalaData = sessionStorage.getItem('salaData');
+            if (storedSalaData) {
+                const salaData = JSON.parse(storedSalaData);
+                if (salaData.length > 0 && salaData[0].thumbnail) {
+                    setThumbnail(salaData[0].thumbnail);
+                }
+            }
+        };
+
+        const timer = setTimeout(loadData, 1);
+
+        return () => clearTimeout(timer);
     }, []);
 
     const fetchSalaData = async (salaNombre) => {
         try {
             const response = await fetch(`http://localhost:8000/cines/ver-peliculas?title=${salaNombre}`);
             const data = await response.json();
-            
-            // Guardar los datos en el sessionStorage
+
             sessionStorage.setItem('salaData', JSON.stringify(data));
-            
-            // Aquí puedes manejar la respuesta del fetch
-            console.log('Información de la sala:', data);
         } catch (error) {
             console.error('Error al obtener la información de la sala:', error);
             setError('Error al obtener la información de la sala. Por favor, inténtalo de nuevo.');
