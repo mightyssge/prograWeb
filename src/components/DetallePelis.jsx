@@ -22,7 +22,7 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, funciones, acto
   };
   
   const getUrl = async () => {
-    const response = await fetch(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyBvaQScd9trsY8vff7Icu5MxxS3Xx4hdIc&type=video&part=snippet&maxResults=1&q=trailer%20${title}`);
+    const response = await fetch(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyDhNrIix98VTOcbjdFuvHMZFO5ei6QNwAw&type=video&part=snippet&maxResults=1&q=trailer%20${title}`);
     const data = await response.json();
     const id_trailer = data["items"][0]["id"]["videoId"];
     setUrlTrailer(`https://www.youtube.com/watch?v=${id_trailer}`);
