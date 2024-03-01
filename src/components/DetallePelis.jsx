@@ -10,16 +10,16 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, funciones, acto
   
   console.log("pelicula actual"+peliculaActual)
 
-  const handleClick = (  horario, sala) => {
-  
-   
-  
+  const handleClick = (  horario, sala, funcionid) => {
+    
+    sessionStorage.setItem('idVentana', funcionid);
     navigate('/reserva', {
       state: {
         salanombre: sala,
         ventana: horario,
         titulopelicula: title,
         thumbnail:thumbnail,
+        funcionid: funcionid
       },
     });
   };
@@ -160,7 +160,7 @@ const DetallePelis = ({ title, year, thumbnail, extract, genres, funciones, acto
                         padding: "4px, 24px, 4px, 24px"
                       }}
                       onClick={() => {
-                        handleClick(horario, funcion.salanombre);
+                        handleClick(horario, funcion.salanombre, funcion.id);
                        /* navigate('/reserva', {
                           state: {
                             peliculaActual: {

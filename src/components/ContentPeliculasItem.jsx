@@ -23,6 +23,7 @@ const obtenerFunciones = async() => {
   const data = await response.json();
   setFuncionesData(data);
   console.log("hola"+data)
+  console.log("Funciones" + funcionesData.id)
 
 }
 
@@ -30,6 +31,9 @@ const obtenerFunciones = async() => {
     console.log("pk:"+location.state.movie.pk)
     obtenerFunciones();
     setPeliculaEspecifica(location.state.movie)
+    
+  console.log("Funciones2" + funcionesData.id)
+    
   }, []);
 
  
