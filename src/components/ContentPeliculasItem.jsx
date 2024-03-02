@@ -22,12 +22,10 @@ const obtenerFunciones = async() => {
   const response = await fetch(`http://localhost:8000/cines/ver-funciones-pelicula?idpelicula=${location.state.movie.id}`);
   const data = await response.json();
   setFuncionesData(data);
-  console.log("hola"+data)
 
 }
 
   useEffect(() => {
-    console.log("pk:"+location.state.movie.pk)
     obtenerFunciones();
     setPeliculaEspecifica(location.state.movie)
   }, []);
@@ -50,6 +48,9 @@ const obtenerFunciones = async() => {
           genres={peliculaEspecifica.genres}
           path={peliculaEspecifica.path}
           funciones = {funcionesData}
+          actores={peliculaEspecifica.cast}
+
+
           /* salas={peliculaEspecifica.salas.map(sala => {
             const salaInfo = salasData.find(s => s.name === sala.sala);
             return { ...sala, ...salaInfo };

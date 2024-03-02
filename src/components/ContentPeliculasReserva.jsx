@@ -3,44 +3,34 @@ import { Button, TextField, Typography, Box, Paper, Dialog, DialogTitle, Grid, D
 import CardReserva from './CardReserva';
 import CardImageReserva from './CardImageReserva';
 import CardFormularioAdentro from './CardFormularioAdentro';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+
 
 const ContentPeliculasReserva = () => {
     const location = useLocation();
-    const { peliculaActual } = location.state || {};
-
-    //const [username, setUsername] = useState('');
-
-    useEffect(() => {
-        if (peliculaActual) {
-            console.log('Información de la película en Reserva:', peliculaActual);
-        }
-
-        const storedUsername = sessionStorage.getItem('user');
-        if (storedUsername) {
-            const userData = JSON.parse(storedUsername);
-            //setUsername(userData);
-
-            
-            setFormData((prevData) => ({
-                ...prevData,
-                nombre: userData.nombre || '',
-                apellido: userData.apellido || '',
-                codigo: userData.correo.substring(0, userData.correo.indexOf("@")) || '',
-                cantidad: prevData.cantidad || '',
-            }));
-        }
-    }, [peliculaActual]);
-
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
         codigo: '',
         cantidad: '',
     });
-
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        const storedUsername = sessionStorage.getItem('user');
+        if (storedUsername) {
+            const userData = JSON.parse(storedUsername);
+            setFormData((prevData) => ({
+                ...prevData,
+                nombre: userData.nombre || '',
+                apellido: userData.apellidos || '',
+                codigo: userData.correo.substring(0, userData.correo.indexOf("@")) || '',
+                cantidad: prevData.cantidad || '',
+            }));
+        }
+    }, []);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -49,39 +39,56 @@ const ContentPeliculasReserva = () => {
             [name]: value,
         }));
     };
+    const navigate = useNavigate();
+    const redirectToPeliculasIndex = () => {
+        navigate('/peliculasindex');
+    };
 
-    //const handlePrintUsername = () => {
-    //    console.log('Username almacenado:', username);
-    //};
-
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (Object.values(formData).some((value) => value.trim() === '')) {
             setError('Por favor, complete todos los campos.');
-        } 
-        else if (formData.cantidad <= 0) {
+        } else if (formData.cantidad <= 0) {
             setError('La cantidad debe ser mayor a 0.');
-        }
-        
-        else if (/\d/.test(formData.nombre)) {
+        } else if (/\d/.test(formData.nombre)) {
             setError('Los nombres no pueden contener números.');
-        }
-
-        else if(/\d/.test(formData.apellido)){
-            setError('Los apellidos no pueden contener números')
-        }
-    
-        else {
-            console.log('Datos de reserva:', formData);
-            setShowConfirmation(true);
+        } else if (/\d/.test(formData.apellido)) {
+            setError('Los apellidos no pueden contener números');
+        } else {
+            try {
+                const response = await fetch(`http://localhost:8000/cines/createreserva`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ventana: sessionStorage.getItem('idVentana'),
+                        usuario: sessionStorage.getItem('id'),
+                        cantidad: formData.cantidad,
+                    }),
+                });
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log('Reserva creada:', responseData);
+                    setShowConfirmation(true);
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.msg || 'Error al crear la reserva.');
+                }
+            } catch (error) {
+                console.error('Error al realizar la solicitud:', error);
+                setError('Error al realizar la solicitud.');
+            }
         }
     };
 
     const handleCloseConfirmation = () => {
         setShowConfirmation(false);
         setError('');
+        navigate('/peliculas'); // Redirigir a /peliculasindex al hacer clic en "Entendido"
     };
+
     return (
         <Box flex={19} sx={{
             width: 'auto',
@@ -89,7 +96,6 @@ const ContentPeliculasReserva = () => {
             padding: '24px',
             gap: '10px'
         }}>
-
             <Box sx={{
                 width: 'auto',
                 height: 'auto',
@@ -118,10 +124,7 @@ const ContentPeliculasReserva = () => {
                     padding: '0px 24px 0px 24px'
                 }}>
 
-                    <CardReserva peliculaActual={peliculaActual} />
-
-
-
+                    <CardReserva titulo={location.state.titulopelicula} sala={location.state.salanombre} />
 
                     <Box sx={{
                         width: 'auto',
@@ -129,17 +132,15 @@ const ContentPeliculasReserva = () => {
                         gap: '24px',
                         display: 'flex',
                         justifyContent: 'space-between'
-
                     }}>
                         <Grid item md={2} sx={{
                             width: 'auto',
                             height: 'auto',
                             paddingLeft: '0px',
-
                         }}>
                             <Box style={{ paddingTop: '20px', paddingRight: '0px', paddingLeft: '0px', paddingBottom: '20px', marginLeft: '-45px' }}>
                                 <Paper elevation={3} style={{ padding: '20px', boxShadow: '5px 5px 15px 0px rgba(0,0,0,0.1)' }}>
-                                    <CardFormularioAdentro peliculaActual={peliculaActual} />
+                                    <CardFormularioAdentro horario={location.state.ventana} />
                                     <form onSubmit={handleSubmit}>
                                         <TextField
                                             label="Nombre"
@@ -152,7 +153,6 @@ const ContentPeliculasReserva = () => {
                                                 placeholder: "Nombre",
                                                 style: { color: 'black' },
                                             }}
-                                            
                                         />
                                         <TextField
                                             label="Apellido"
@@ -165,9 +165,8 @@ const ContentPeliculasReserva = () => {
                                                 placeholder: "Apellido",
                                                 style: { color: 'black' },
                                             }}
-                                            
                                         />
-                                        <TextField 
+                                        <TextField
                                             label="Código"
                                             fullWidth
                                             margin="normal"
@@ -195,20 +194,17 @@ const ContentPeliculasReserva = () => {
                                                 placeholder: "Cantidad",
                                                 style: { color: 'black' },
                                             }}
-                                            type="number" 
+                                            type="number"
                                         />
-
                                         <Button
                                             type="submit"
                                             variant="contained"
                                             color="secondary"
                                             fullWidth
                                             style={{ backgroundColor: 'rgb(250, 117, 37)', color: 'white', padding: '15px', fontWeight: 'bold' }}
-                                            
                                         >
                                             Reservar
                                         </Button>
-
                                         {error && (
                                             <Typography variant="body2" color="error" sx={{ paddingTop: '10px' }}>
                                                 {error}
@@ -219,7 +215,7 @@ const ContentPeliculasReserva = () => {
                             </Box>
                         </Grid>
                         <Grid item md={4}>
-                            <CardImageReserva peliculaActual={peliculaActual} />
+                            <CardImageReserva thumbnail={location.state.thumbnail} />
                         </Grid>
                     </Box>
                 </Box>
@@ -278,7 +274,7 @@ const ContentPeliculasReserva = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </Box >
+        </Box>
     );
 };
 
