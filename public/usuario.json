@@ -1,0 +1,16 @@
+[
+    {
+        "nombre": "Cesar Andres",
+        "apellido": "Garcia Vilchez",
+        "correo": "20211104@aloe.ulima.edu.pe",
+        "password": "123"
+  
+    },
+    {
+      "nombre": "Alvaro Chino",
+      "apellido": "Sanchez",
+      "correo": "20221105@aloe.ulima.edu.pe",
+      "password": "111"
+    }
+  ]
+  
