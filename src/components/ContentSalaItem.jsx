@@ -13,7 +13,7 @@ const ContentSalaItem = () => {
 
 
   const obtenerFunciones = async() => {
-    const response = await fetch(`http://localhost:8000/cines/ver-funciones-sala?idsala=${location.state.sala.id}`);
+    const response = await fetch(`https://peliculasbackendpw.azurewebsites.net/cines/ver-funciones-sala?idsala=${location.state.sala.id}`);
     const data = await response.json();
     setFuncionesData(data);
     console.log("hola"+data)

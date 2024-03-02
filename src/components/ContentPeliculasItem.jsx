@@ -19,7 +19,7 @@ const ContentPeliculasItem = () => {
   
 
 const obtenerFunciones = async() => {
-  const response = await fetch(`http://localhost:8000/cines/ver-funciones-pelicula?idpelicula=${location.state.movie.id}`);
+  const response = await fetch(`https://peliculasbackendpw.azurewebsites.net/cines/ver-funciones-pelicula?idpelicula=${location.state.movie.id}`);
   const data = await response.json();
   setFuncionesData(data);
 

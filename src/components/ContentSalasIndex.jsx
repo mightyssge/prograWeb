@@ -25,7 +25,7 @@ const ContentSalasIndex = ({ searchText }) => {
     }, [searchText]);
 
     const obtenerSalas = async () => {
-        const response = await fetch(`http://localhost:8000/cines/ver-salas?path=${searchText}`)
+        const response = await fetch(`https://peliculasbackendpw.azurewebsites.net/cines/ver-salas?path=${searchText}`)
         const data = await response.json()
         setSalasData(data)
         const listaSalasStr = JSON.stringify(data)
@@ -34,7 +34,7 @@ const ContentSalasIndex = ({ searchText }) => {
     
     const fetchUserID = async (nombre, apellidos) => {
         try {
-            const response = await fetch(`http://localhost:8000/cines/ver-usuarioid?nombre=${nombre}&apellido=${apellidos}`);
+            const response = await fetch(`https://peliculasbackendpw.azurewebsites.net/cines/ver-usuarioid?nombre=${nombre}&apellido=${apellidos}`);
             if (!response.ok) {
                 throw new Error('Error al procesar la solicitud');
             }

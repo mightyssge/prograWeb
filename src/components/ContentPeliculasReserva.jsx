@@ -57,7 +57,7 @@ const ContentPeliculasReserva = () => {
             setError('Los apellidos no pueden contener números');
         } else {
             try {
-                const response = await fetch(`http://localhost:8000/cines/createreserva`, {
+                const response = await fetch(`https://peliculasbackendpw.azurewebsites.net/cines/createreserva`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

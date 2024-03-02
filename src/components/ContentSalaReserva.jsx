@@ -60,7 +60,7 @@ const ContentSalaReserva = () => {
 
     const fetchSalaData = async (salaNombre) => {
         try {
-            const response = await fetch(`http://localhost:8000/cines/ver-peliculas?title=${salaNombre}`);
+            const response = await fetch(`https://peliculasbackendpw.azurewebsites.net/cines/ver-peliculas?title=${salaNombre}`);
             const data = await response.json();
 
             sessionStorage.setItem('salaData', JSON.stringify(data));
@@ -82,7 +82,7 @@ const ContentSalaReserva = () => {
             setError('Los apellidos no pueden contener números');
         } else {
             try {
-                const response = await fetch(`http://localhost:8000/cines/createreserva`, {
+                const response = await fetch(`https://peliculasbackendpw.azurewebsites.net/cines/createreserva`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

@@ -1,95 +1,71 @@
-// En LoginPage.jsx
 import React, { useState, useEffect } from "react";
 import { Container, TextField, Button, Typography, alpha, Alert } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 
-
 const LoginPage = () => {
-  const [usuarios, setUsuarios] = useState([])
+  const navigate = useNavigate();
+  const [correo, setCorreo] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
 
-    const navigate = useNavigate();
+  const handleRegisterClick = () => {
+    navigate('/register');
+  };
 
-    const [correo, setCorreo] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const [showAlert, setShowAlert] = useState(false);
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-    const obtenerUsuariosHTTP = async () => {
-      const response = await fetch("http://localhost:3000/usuario.json")
-      const data = await response.json()
-      setUsuarios(data)
-  }
+    // Validaciones de correo y contraseña
+    if (!correo || !password) {
+      setError("Por favor ingresa tu correo y contraseña");
+      setShowAlert(true);
+      return;
+    }
 
-    const isCorreoInstitucional = (correo) => {
-      const correoRegex = /@aloe\.ulima\.edu\.pe$/i;
-      return correoRegex.test(correo);
-    };
-  
-    const handleRegisterClick = () => {
-      navigate('/register');
-    };
-  
-    const handleLogin = (e) => {
-        e.preventDefault();
-      
-        if (!isCorreoInstitucional(correo)) {
-          setError("Por favor, utiliza un correo institucional");
-          setShowAlert(true);
-      
-          setTimeout(() => {
-            setShowAlert(false);
-            setError("");
-          }, 10000);
-          return;
-        }
-      
-      
-        var usuarioEncontrado = usuarios.find(
-          (usuario) => usuario.correo === correo && usuario.password === password
-        );
+    try {
+      const response = await fetch("https://peliculasbackendpw.azurewebsites.net/cines/users", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          correo: correo,
+          password: password
+        })
+      });
+      const data = await response.json();
 
-
-        if(!usuarioEncontrado){
-          const usuariosLocales = localStorage.getItem("usuarios");
-          const usuariosLocalesJSON = usuariosLocales ? JSON.parse(usuariosLocales) : null;
-          usuarioEncontrado = usuariosLocalesJSON.find(
-            (usuario) => usuario.correo === correo && usuario.password === password
-          );
-        }
-
-
-
-        if (usuarioEncontrado) {
-          // Almacena la información de inicio de sesión en sessionStorage
-          const data = JSON.stringify(usuarioEncontrado);
-
-          sessionStorage.setItem('isLoggedIn', 'true');
-          sessionStorage.setItem('user', data);
-          
-          
-      
-          navigate('/peliculas');
-        } else {
-          setError("Contraseña incorrecta");
-          setShowAlert(true);
-      
-          setTimeout(() => {
-            setShowAlert(false);
-            setError("");
-          }, 10000);
-        }
-      };
-  
-    useEffect(() => {
-      // Verifica si el usuario está autenticado al cargar la página
-      const isLoggedIn = sessionStorage.getItem('isLoggedIn');
-  
-      if (isLoggedIn) {
-        // Si está autenticado, redirige a la página de películas
+      if (response.ok) {
+        sessionStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('user', JSON.stringify(data));
         navigate('/peliculas');
+      } else {
+        setError(data.msg || "Error desconocido");
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+          setError("");
+        }, 10000);
       }
-      obtenerUsuariosHTTP()
-    }, [navigate]);
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error);
+      setError("Error al iniciar sesión");
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+        setError("");
+      }, 10000);
+    }
+  };
+
+  useEffect(() => {
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+
+    if (isLoggedIn) {
+      navigate('/peliculas');
+    }
+  }, [navigate]);
 
   return (
     <Container
@@ -200,7 +176,7 @@ const LoginPage = () => {
           <Link
             to="/recover"
             component={Link}
-            style={{color : "orange"}}
+            style={{ color: "orange" }}
             sx={{
               marginTop: 2,
               fontSize: 15,
@@ -209,7 +185,7 @@ const LoginPage = () => {
               textDecoration: 'none',
               textAlign: 'center',
               display: 'block',
-              color: "orange", 
+              color: "orange",
             }}
           >
             Olvidé mi contraseña
